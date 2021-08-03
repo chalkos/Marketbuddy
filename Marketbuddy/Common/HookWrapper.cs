@@ -7,25 +7,24 @@ namespace Marketbuddy.Common
     // based on https://github.com/Caraxi/SimpleTweaksPlugin/blob/main/Helper/HookWrapper.cs
     public interface IHookWrapper : IDisposable
     {
-        public void Enable();
-        public void Disable();
-
         public bool IsEnabled { get; }
         public bool IsDisposed { get; }
-
+        public void Enable();
+        public void Disable();
     }
 
     public class HookWrapper<T> : IHookWrapper where T : Delegate
     {
-
-        private Hook<T> wrappedHook;
-
         private bool disposed;
+
+        private readonly Hook<T> wrappedHook;
 
         public HookWrapper(Hook<T> hook)
         {
             wrappedHook = hook;
         }
+
+        public T Original => wrappedHook.Original;
 
         public void Enable()
         {
@@ -47,7 +46,6 @@ namespace Marketbuddy.Common
             wrappedHook?.Dispose();
         }
 
-        public T Original => wrappedHook.Original;
         public bool IsEnabled => wrappedHook.IsEnabled;
         public bool IsDisposed => wrappedHook.IsDisposed;
     }

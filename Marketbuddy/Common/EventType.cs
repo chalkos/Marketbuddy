@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Marketbuddy.Common
+﻿namespace Marketbuddy.Common
 {
     public enum EventType : ushort
     {
@@ -83,6 +77,6 @@ namespace Marketbuddy.Common
         COMPONENT_IN = 73,
         COMPONENT_OUT = 74,
         COMPONENT_SCROLL = 75,
-        COMPONENT_FOCUSED = 76,  // Maybe
+        COMPONENT_FOCUSED = 76 // Maybe
     }
 }

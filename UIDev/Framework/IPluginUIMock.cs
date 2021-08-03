@@ -1,9 +1,9 @@
-﻿using ImGuiScene;
-using System;
+﻿using System;
+using ImGuiScene;
 
 namespace UIDev
 {
-    interface IPluginUIMock : IDisposable
+    internal interface IPluginUIMock : IDisposable
     {
         void Initialize(SimpleImGuiScene scene);
     }

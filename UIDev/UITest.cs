@@ -1,19 +1,11 @@
-﻿using ImGuiNET;
+﻿using System.Numerics;
+using ImGuiNET;
 using ImGuiScene;
-using System;
-using System.Numerics;
-using Marketbuddy;
-using System.Collections.Generic;
 
 namespace UIDev
 {
-    class UITest : IPluginUIMock
+    internal class UITest : IPluginUIMock
     {
-        public static void Main(string[] args)
-        {
-            UIBootstrap.Inititalize(new UITest());
-        }
-
         private SimpleImGuiScene scene;
 
         public void Initialize(SimpleImGuiScene scene)
@@ -24,7 +16,7 @@ namespace UIDev
 
             scene.OnBuildUI += Draw;
 
-            this.Visible = true;
+            Visible = true;
 
             // saving this only so we can kill the test application by closing the window
             // (instead of just by hitting escape)
@@ -33,6 +25,11 @@ namespace UIDev
 
         public void Dispose()
         {
+        }
+
+        public static void Main(string[] args)
+        {
+            UIBootstrap.Inititalize(new UITest());
         }
 
         // You COULD go all out here and make your UI generic and work on interfaces etc, and then
@@ -44,25 +41,25 @@ namespace UIDev
             DrawMainWindow();
             DrawSettingsWindow();
 
-            if (!Visible)
-            {
-                this.scene.ShouldQuit = true;
-            }
+            if (!Visible) scene.ShouldQuit = true;
         }
 
         #region Nearly a copy/paste of PluginUI
-        private bool visible = false;
+
+        private bool visible;
+
         public bool Visible
         {
-            get { return this.visible; }
-            set { this.visible = value; }
+            get => visible;
+            set => visible = value;
         }
 
-        private bool settingsVisible = false;
+        private bool settingsVisible;
+
         public bool SettingsVisible
         {
-            get { return this.settingsVisible; }
-            set { this.settingsVisible = value; }
+            get => settingsVisible;
+            set => settingsVisible = value;
         }
 
         // this is where you'd have to start mocking objects if you really want to match
@@ -71,38 +68,28 @@ namespace UIDev
 
         public void DrawMainWindow()
         {
-            if (!Visible)
-            {
-                return;
-            }
+            if (!Visible) return;
 
-            if (ImGui.Begin("Marketbuddy", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
-            {
-
-
-                ImGui.End();
-
-            }
+            if (ImGui.Begin("Marketbuddy", ref visible,
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)) ImGui.End();
         }
 
         public void DrawSettingsWindow()
         {
-            if (!SettingsVisible)
-            {
-                return;
-            }
+            if (!SettingsVisible) return;
 
             ImGui.SetNextWindowSize(new Vector2(232, 75), ImGuiCond.Always);
-            if (ImGui.Begin("A Wonderful Configuration Window", ref this.settingsVisible,
-                ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
-            {
-                if (ImGui.Checkbox("Random Config Bool", ref this.fakeConfigBool))
+            if (ImGui.Begin("A Wonderful Configuration Window", ref settingsVisible,
+                ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse |
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+                if (ImGui.Checkbox("Random Config Bool", ref fakeConfigBool))
                 {
                     // nothing to do in a fake ui!
                 }
-            }
+
             ImGui.End();
         }
+
         #endregion
     }
 }
