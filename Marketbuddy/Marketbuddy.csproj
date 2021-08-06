@@ -109,7 +109,7 @@
     <Delete Files="@(DeleteAssemblies)" />
   </Target>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(Configuration) == Release powershell Compress-Archive -Force $(TargetPath), $(TargetDir)$(SolutionName).pdb, $(TargetDir)$(SolutionName).json $(ProjectDir)$(SolutionName).zip" />
+    <Exec Command="if $(Configuration) == Release powershell Compress-Archive -Force $(TargetPath), $(TargetDir)$(SolutionName).pdb, $(TargetDir)$(SolutionName).json $(SolutionDir)$(SolutionName).zip" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
