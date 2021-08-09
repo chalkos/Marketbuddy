@@ -1,0 +1,14 @@
+<Project>
+    <Target Name="PackagePlugin" AfterTargets="cleanoutDir" Condition="'$(Configuration)' == 'Release'">
+        <DalamudPackager
+                ProjectDir="$(ProjectDir)"
+                OutputPath="$(OutputPath)"
+                AssemblyName="$(AssemblyName)"
+                VersionComponents="4"
+                MakeZip="true"
+                Include="
+                    Marketbuddy.dll;
+                    Marketbuddy.json
+                "/>
+    </Target>
+</Project>

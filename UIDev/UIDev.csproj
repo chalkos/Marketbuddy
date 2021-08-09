@@ -106,11 +106,5 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Marketbuddy\Marketbuddy.csproj">
-      <Project>{13c812e9-0d42-4b95-8646-40eebf30636f}</Project>
-      <Name>Marketbuddy</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

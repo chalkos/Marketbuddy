@@ -2,9 +2,5 @@
     "Author": "Chalkos",
     "Name": "Marketbuddy",
     "Description": "Helper for your day-to-day market operations",
-    "InternalName": "Marketbuddy",
-    "AssemblyVersion": "0.1.0.0",
-    "RepoUrl": "https://github.com/chalkos/Marketbuddy",
-    "ApplicableVersion": "any",
-    "DalamudApiLevel": 3
+    "RepoUrl": "https://github.com/chalkos/Marketbuddy"
 }
