@@ -6,7 +6,7 @@
         <OutputType>Library</OutputType>
         <Authors>Chalkos</Authors>
         <Title>Marketbuddy</Title>
-        <Version>0.1.0.2</Version>
+        <Version>0.1.0.3</Version>
         <Authors>Chalkos</Authors>
         <TargetFramework>net48</TargetFramework>
         <LangVersion>preview</LangVersion>
@@ -45,7 +45,7 @@
             <Version>1.0.4</Version>
         </PackageReference>
         <Reference Include="Dalamud">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
+            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\5.2.7.0\Dalamud.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="FFXIVClientStructs">
@@ -55,11 +55,11 @@
             <HintPath>..\..\FFXIVClientStructs\bin\Release\FFXIVClientStructs.Common.dll</HintPath>
         </Reference>
         <Reference Include="ImGui.NET">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGui.NET.dll</HintPath>
+            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\5.2.7.0\ImGui.NET.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="ImGuiScene">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll</HintPath>
+            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\5.2.7.0\ImGuiScene.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>

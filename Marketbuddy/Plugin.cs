@@ -145,17 +145,7 @@ namespace Marketbuddy
                         //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
                         var price = getPricePerItem(nodeParam);
                         if (price > 0)
-                            Commons.StartSTATask(() => SetPrice(price - 1))
-                                .ContinueWith(t =>
-                                {
-                                    var aggException = t.Exception.Flatten();
-                                    foreach (var e in aggException.InnerExceptions)
-                                    {
-                                        if (e is OperationCanceledException)
-                                            continue;
-                                        PluginLog.Error(e.ToString());
-                                    }
-                                }, TaskContinuationOptions.OnlyOnFaulted);
+                            SetPrice(price - 1);
                     }
                     catch (Exception e)
                     {
@@ -186,8 +176,6 @@ namespace Marketbuddy
             {
                 if (!(Configuration.HoldCtrlToPaste && Control.ModifierKeys == Keys.Control))
                 {
-                    // close results list
-                    Task.Delay(50).Wait();
                     // Component::GUI::AtkComponentWindow.ReceiveEvent this=0x1AC801863B0 evt=EventType.CHANGE               a3=2   a4=0x1AC66640090 (src=0x1AC801863B0; tgt=0x1AC98B47EA0) a5=0x4AAAEFE388
                     var addonItemSearchResult = GetUnitBase("ItemSearchResult");
                     Common.SendClick(new IntPtr(addonItemSearchResult->WindowNode->Component), EventType.CHANGE, 2,
@@ -195,8 +183,6 @@ namespace Marketbuddy
                             .NodeList[6]->GetComponent()->OwnerNode);
                 }
 
-                // confirm new price
-                Task.Delay(50).Wait();
                 // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214B4D360E0 evt=EventType.CHANGE               a3=21  a4=0x214B920D2E0 (src=0x214B4D360E0; tgt=0x21460686550) a5=0xBB316FE6C8
                 var addonRetainerSell = (AddonRetainerSell*) retainerSell;
                 Common.SendClick(new IntPtr(addonRetainerSell), EventType.CHANGE, 21, addonRetainerSell->Confirm);
