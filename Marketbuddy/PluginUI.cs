@@ -73,56 +73,56 @@ namespace Marketbuddy
                 ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize))
             {
                 var AutoOpenComparePrices = configuration.AutoOpenComparePrices;
-                if (ImGui.Checkbox("Open current prices list when adjusting a price", ref AutoOpenComparePrices))
+                var HoldShiftToStop = configuration.HoldShiftToStop;
+                var HoldCtrlToPaste = configuration.HoldCtrlToPaste;
+                var AutoOpenHistory = configuration.AutoOpenHistory;
+                var AutoInputNewPrice = configuration.AutoInputNewPrice;
+                var SaveToClipboard = configuration.SaveToClipboard;
+                var AutoConfirmNewPrice = configuration.AutoConfirmNewPrice;
+                var MaximumStackSize = configuration.MaximumStackSize;
+                var UseMaxStackSize = configuration.UseMaxStackSize;
+
+                bool changed =
+                    ImGui.Checkbox("Open current prices list when adjusting a price",
+                        ref AutoOpenComparePrices);
+                changed |= ImGui.Checkbox("Holding SHIFT prevents the above", ref HoldShiftToStop);
+                
+                changed |= ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it",
+                    ref HoldCtrlToPaste);
+                
+                changed |= ImGui.Checkbox("Open price history together with current prices list",
+                    ref AutoOpenHistory);
+                
+                changed |= ImGui.Checkbox("Clicking a price sets your price as that price with a 1gil undercut.",
+                    ref AutoInputNewPrice);
+                
+                changed |=
+                    ImGui.Checkbox("Clicking a price copies that price with a 1gil undercut to the clipboard.",
+                        ref SaveToClipboard);
+                
+                changed |=
+                    ImGui.Checkbox(
+                        "Closes the list (if open) and confirms the new price after selecting it from the list (or if holding CTRL).",
+                        ref AutoConfirmNewPrice);
+
+                changed |=
+                    ImGui.Checkbox("Limit stack size to ", ref UseMaxStackSize);
+                
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(45);
+                changed |= ImGui.InputInt("items", ref MaximumStackSize, 0);
+
+                if (changed)
                 {
                     configuration.AutoOpenComparePrices = AutoOpenComparePrices;
-                    configuration.Save();
-                }
-
-                var HoldShiftToStop = configuration.HoldShiftToStop;
-                if (ImGui.Checkbox("Holding SHIFT prevents the above", ref HoldShiftToStop))
-                {
                     configuration.HoldShiftToStop = HoldShiftToStop;
-                    configuration.Save();
-                }
-
-                var HoldCtrlToPaste = configuration.HoldCtrlToPaste;
-                if (ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it",
-                    ref HoldCtrlToPaste))
-                {
                     configuration.HoldCtrlToPaste = HoldCtrlToPaste;
-                    configuration.Save();
-                }
-
-                var AutoOpenHistory = configuration.AutoOpenHistory;
-                if (ImGui.Checkbox("Open price history together with current prices list", ref AutoOpenHistory))
-                {
                     configuration.AutoOpenHistory = AutoOpenHistory;
-                    configuration.Save();
-                }
-
-                var AutoInputNewPrice = configuration.AutoInputNewPrice;
-                if (ImGui.Checkbox("Clicking a price sets your price as that price with a 1gil undercut.",
-                    ref AutoInputNewPrice))
-                {
                     configuration.AutoInputNewPrice = AutoInputNewPrice;
-                    configuration.Save();
-                }
-
-                var SaveToClipboard = configuration.SaveToClipboard;
-                if (ImGui.Checkbox("Clicking a price copies that price with a 1gil undercut to the clipboard.",
-                    ref SaveToClipboard))
-                {
                     configuration.SaveToClipboard = SaveToClipboard;
-                    configuration.Save();
-                }
-
-                var AutoConfirmNewPrice = configuration.AutoConfirmNewPrice;
-                if (ImGui.Checkbox(
-                    "Closes the list (if open) and confirms the new price after selecting it from the list (or if holding CTRL).",
-                    ref AutoConfirmNewPrice))
-                {
                     configuration.AutoConfirmNewPrice = AutoConfirmNewPrice;
+                    configuration.UseMaxStackSize = UseMaxStackSize;
+                    configuration.MaximumStackSize = MaximumStackSize <= 9999 ? MaximumStackSize >= 1 ? MaximumStackSize : 1 : 9999;
                     configuration.Save();
                 }
             }

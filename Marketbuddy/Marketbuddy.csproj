@@ -6,7 +6,7 @@
         <OutputType>Library</OutputType>
         <Authors>Chalkos</Authors>
         <Title>Marketbuddy</Title>
-        <Version>0.1.0.3</Version>
+        <Version>0.1.0.4</Version>
         <Authors>Chalkos</Authors>
         <TargetFramework>net48</TargetFramework>
         <LangVersion>preview</LangVersion>
@@ -39,8 +39,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true"/>
-        <PackageReference Include="DalamudPackager" Version="1.2.2"/>
+        <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
+        <PackageReference Include="DalamudPackager" Version="1.2.2" />
         <PackageReference Include="InputSimulator">
             <Version>1.0.4</Version>
         </PackageReference>
@@ -64,7 +64,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <None Include="DalamudPackager.targets"/>
+        <None Include="DalamudPackager.targets" />
         <None Include="Marketbuddy.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
@@ -72,22 +72,22 @@
 
     <Target Name="ILRepack" AfterTargets="Build">
         <ItemGroup>
-            <InputAssemblies Include="$(TargetPath)"/>
-            <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)"/>
+            <InputAssemblies Include="$(TargetPath)" />
+            <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
         </ItemGroup>
-        <Exec Command="$(ILRepack) /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')"/>
+        <Exec Command="$(ILRepack) /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
     </Target>
 
     <Target Name="CleanOutDir" AfterTargets="ILRepack">
         <ItemGroup>
-            <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)"/>
+            <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
         </ItemGroup>
-        <Message Text="Deleting @(DeleteAssemblies)" Importance="high"/>
-        <Delete Files="@(DeleteAssemblies)"/>
+        <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
+        <Delete Files="@(DeleteAssemblies)" />
     </Target>
 
     <Target Name="PackagePlugin" AfterTargets="CleanOutDir" Condition="'$(Configuration)' == 'Release'">
-        <Message Text="Deleting @(DeleteAssemblies)" Importance="high"/>
-        <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="4" MakeZip="true" Include="&#xD;&#xA;                    Marketbuddy.dll;&#xD;&#xA;                    Marketbuddy.json&#xD;&#xA;                "/>
+        <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
+        <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="4" MakeZip="true" Include="&#xD;&#xA;                    Marketbuddy.dll;&#xD;&#xA;                    Marketbuddy.json&#xD;&#xA;                " />
     </Target>
 </Project>

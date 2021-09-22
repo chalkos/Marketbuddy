@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Dalamud.Game.Command;
@@ -97,7 +98,7 @@ namespace Marketbuddy
                 try
                 {
                     //open compare prices list on opening sell price selection
-                    var comparePrices = ((AddonRetainerSell*) addon)->ComparePrices->AtkComponentBase.OwnerNode;
+                    var comparePrices = ((AddonRetainerSell*)addon)->ComparePrices->AtkComponentBase.OwnerNode;
                     // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214C05CB480 evt=EventType.CHANGE               a3=4   a4=0x2146C18C210 (src=0x214C05CB480; tgt=0x214606863B0) a5=0xBB316FE6C8
                     Common.SendClick(new IntPtr(addon), EventType.CHANGE, 4, comparePrices);
                 }
@@ -120,7 +121,7 @@ namespace Marketbuddy
                 try
                 {
                     //open history on opening the list
-                    var history = ((AddonItemSearchResult*) addon)->History->AtkComponentBase.OwnerNode;
+                    var history = ((AddonItemSearchResult*)addon)->History->AtkComponentBase.OwnerNode;
                     //Client::UI::AddonItemSearchResult.ReceiveEvent this=0x1CC2BF42BD0 evt=EventType.CHANGE               a3=23  a4=0x1CCD86C1460 a5=0x90EF96E598
                     Common.SendClick(new IntPtr(addon), EventType.CHANGE, 23, history);
                 }
@@ -161,12 +162,29 @@ namespace Marketbuddy
             if (retainerSell->UldManager.NodeListCount != 23)
                 throw new MarketException("Unexpected fields in addon RetainerSell");
 
-            var componentNumericInput =
-                (AtkComponentNumericInput*) retainerSell->UldManager.NodeList[15]->GetComponent();
-            PluginLog.Debug($"componentNumericInput: {new IntPtr(componentNumericInput).ToString("X")}");
+            var priceComponentNumericInput =
+                (AtkComponentNumericInput*)retainerSell->UldManager.NodeList[15]->GetComponent();
+            var quantityComponentNumericInput =
+                (AtkComponentNumericInput*)retainerSell->UldManager.NodeList[11]->GetComponent();
+            PluginLog.Debug($"componentNumericInput: {new IntPtr(priceComponentNumericInput).ToString("X")}");
+            PluginLog.Debug($"componentNumericInput: {new IntPtr(quantityComponentNumericInput).ToString("X")}");
 
             if (Configuration.AutoInputNewPrice)
-                componentNumericInput->SetValue(newPrice);
+            {
+                priceComponentNumericInput->SetValue(newPrice);
+
+                if (Configuration.UseMaxStackSize)
+                {
+                    var quantityValueString = quantityComponentNumericInput->AtkTextNode->NodeText.ToString();
+                    PluginLog.Debug($"qty: {quantityValueString}");
+                    if (int.TryParse(quantityValueString, out var quantityValue))
+                    {
+                        if (quantityValue > Configuration.MaximumStackSize)
+                            quantityComponentNumericInput->SetValue(Configuration.MaximumStackSize);
+                    }
+                }
+            }
+
             if (Configuration.SaveToClipboard)
                 Clipboard.SetText(newPrice.ToString());
 
@@ -184,7 +202,7 @@ namespace Marketbuddy
                 }
 
                 // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214B4D360E0 evt=EventType.CHANGE               a3=21  a4=0x214B920D2E0 (src=0x214B4D360E0; tgt=0x21460686550) a5=0xBB316FE6C8
-                var addonRetainerSell = (AddonRetainerSell*) retainerSell;
+                var addonRetainerSell = (AddonRetainerSell*)retainerSell;
                 Common.SendClick(new IntPtr(addonRetainerSell), EventType.CHANGE, 21, addonRetainerSell->Confirm);
             }
 
@@ -194,10 +212,10 @@ namespace Marketbuddy
         private int getPricePerItem(AtkResNode* nodeParam)
         {
             // list item renderer component
-            var x = *(AtkComponentBase**) nodeParam;
+            var x = *(AtkComponentBase**)nodeParam;
 
             PluginLog.Debug(
-                $"component={(ulong) nodeParam->GetComponent():X}, childCount={nodeParam->ChildCount}, target={*(ulong*) nodeParam:X}, gotit={(ulong) x:X}");
+                $"component={(ulong)nodeParam->GetComponent():X}, childCount={nodeParam->ChildCount}, target={*(ulong*)nodeParam:X}, gotit={(ulong)x:X}");
 
             if (x == null) return 0;
             var uldManager = x->UldManager;
@@ -214,7 +232,7 @@ namespace Marketbuddy
             if (uldManager.NodeListCount < 14) return 0;
             PluginLog.Debug("3");
 
-            var singlePriceNode = (AtkTextNode*) uldManager.NodeList[10];
+            var singlePriceNode = (AtkTextNode*)uldManager.NodeList[10];
 
             if (singlePriceNode == null)
             {
@@ -228,8 +246,8 @@ namespace Marketbuddy
                 PluginLog.Information($"singlePriceNode {singlePriceNode->NodeText.StringPtr[0] == 0x20}; totalTextNode {totalTextNode->NodeText.StringPtr[0] == 0x20}");
             }*/
 
-            var priceString = Common.ReadSeString(singlePriceNode->NodeText).TextValue
-                .Replace($"{(char) SeIconChar.Gil}", "")
+            var priceString = singlePriceNode->NodeText.ToString()
+                .Replace($"{(char)SeIconChar.Gil}", "")
                 .Replace(",", "")
                 .Replace(" ", "")
                 .Replace(".", "");
@@ -251,7 +269,7 @@ namespace Marketbuddy
 
         private AtkUnitBase* GetUnitBase(string name, int index = 1)
         {
-            return (AtkUnitBase*) Interface.Framework.Gui.GetUiObjectByName(name, index);
+            return (AtkUnitBase*)Interface.Framework.Gui.GetUiObjectByName(name, index);
         }
 
         private void DrawUI()

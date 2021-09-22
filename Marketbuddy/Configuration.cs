@@ -18,6 +18,10 @@ namespace Marketbuddy
         public bool AutoInputNewPrice { get; set; } = true;
         public bool AutoConfirmNewPrice { get; set; } = true;
         public bool HoldCtrlToPaste { get; set; } = true;
+        
+        public bool UseMaxStackSize { get; set; } = false;
+        public int MaximumStackSize { get; set; } = 99;
+        
         public int Version { get; set; } = 0;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
