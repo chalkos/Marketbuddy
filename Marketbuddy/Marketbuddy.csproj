@@ -1,93 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <OutputType>Library</OutputType>
         <Authors>Chalkos</Authors>
         <Title>Marketbuddy</Title>
         <Version>0.1.0.4</Version>
-        <Authors>Chalkos</Authors>
-        <TargetFramework>net48</TargetFramework>
-        <LangVersion>preview</LangVersion>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Nullable>enable</Nullable>
         <Deterministic>true</Deterministic>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PropertyGroup>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <Platforms>x64</Platforms>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <OutputPath>$(AppData)\XIVLauncher\devPlugins\$(Title)\</OutputPath>
+        <WarningLevel>4</WarningLevel>
+        <ErrorReport>prompt</ErrorReport>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
         <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
         <DebugType>pdbonly</DebugType>
         <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
+        <DefineConstants>RELEASE;TRACE</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
-        <PackageReference Include="DalamudPackager" Version="1.2.2" />
-        <PackageReference Include="InputSimulator">
-            <Version>1.0.4</Version>
-        </PackageReference>
+        <PackageReference Include="DalamudPackager" Version="2.1.2" />
         <Reference Include="Dalamud">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\5.2.7.0\Dalamud.dll</HintPath>
-            <Private>False</Private>
+            <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="FFXIVClientStructs">
-            <HintPath>..\..\FFXIVClientStructs\bin\Release\FFXIVClientStructs.dll</HintPath>
-        </Reference>
-        <Reference Include="FFXIVClientStructs.Common">
-            <HintPath>..\..\FFXIVClientStructs\bin\Release\FFXIVClientStructs.Common.dll</HintPath>
+            <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="ImGui.NET">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\5.2.7.0\ImGui.NET.dll</HintPath>
-            <Private>False</Private>
+            <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="ImGuiScene">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\5.2.7.0\ImGuiScene.dll</HintPath>
+            <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="SharpDX">
+            <HintPath>$(DalamudLibPath)SharpDX.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="SharpDX.Mathematics">
+            <HintPath>$(DalamudLibPath)SharpDX.Mathematics.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>
+
     <ItemGroup>
-        <None Include="DalamudPackager.targets" />
-        <None Include="Marketbuddy.json">
+        <Content Include="Marketbuddy.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+        </Content>
     </ItemGroup>
-
-    <Target Name="ILRepack" AfterTargets="Build">
-        <ItemGroup>
-            <InputAssemblies Include="$(TargetPath)" />
-            <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
-        </ItemGroup>
-        <Exec Command="$(ILRepack) /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
-    </Target>
-
-    <Target Name="CleanOutDir" AfterTargets="ILRepack">
-        <ItemGroup>
-            <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
-        </ItemGroup>
-        <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
-        <Delete Files="@(DeleteAssemblies)" />
-    </Target>
-
-    <Target Name="PackagePlugin" AfterTargets="CleanOutDir" Condition="'$(Configuration)' == 'Release'">
-        <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
-        <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" VersionComponents="4" MakeZip="true" Include="&#xD;&#xA;                    Marketbuddy.dll;&#xD;&#xA;                    Marketbuddy.json&#xD;&#xA;                " />
-    </Target>
 </Project>

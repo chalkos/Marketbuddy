@@ -7,8 +7,7 @@ namespace Marketbuddy
     // to do any cleanup
     internal class PluginUI : IDisposable
     {
-        private readonly Configuration configuration;
-        private Plugin plugin;
+        private Configuration configuration => Configuration.GetOrLoad();
 
         private bool settingsVisible;
 
@@ -16,10 +15,8 @@ namespace Marketbuddy
         private bool visible;
 
         // passing in the image here just for simplicity
-        public PluginUI(Plugin plugin)
+        public PluginUI(Marketbuddy marketbuddy)
         {
-            this.plugin = plugin;
-            configuration = plugin.Configuration;
         }
 
         public bool Visible

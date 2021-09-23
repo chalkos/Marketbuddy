@@ -1,16 +1,13 @@
 ﻿using System;
 using Dalamud.Configuration;
 using Dalamud.Plugin;
+using static Marketbuddy.Common.Dalamud;
 
 namespace Marketbuddy
 {
     [Serializable]
     public class Configuration : IPluginConfiguration
     {
-        // the below exist just to make saving less cumbersome
-
-        [NonSerialized] private DalamudPluginInterface pluginInterface;
-
         public bool HoldShiftToStop { get; set; } = true;
         public bool AutoOpenComparePrices { get; set; } = true;
         public bool AutoOpenHistory { get; set; } = true;
@@ -24,14 +21,28 @@ namespace Marketbuddy
         
         public int Version { get; set; } = 0;
 
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.pluginInterface = pluginInterface;
-        }
+        // the below exist just to make saving/loading less cumbersome
+        [NonSerialized]
+        private static Configuration? _cachedConfig;
 
         public void Save()
         {
-            pluginInterface.SavePluginConfig(this);
+            PluginInterface.SavePluginConfig(this);
+        }
+
+        public static Configuration GetOrLoad()
+        {
+            if (_cachedConfig != null)
+                return _cachedConfig;
+            
+            if (PluginInterface.GetPluginConfig() is not Configuration config)
+            {
+                config = new Configuration();
+                config.Save();
+            }
+            
+            _cachedConfig = config;
+            return _cachedConfig;
         }
     }
 }

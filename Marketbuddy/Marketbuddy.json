@@ -1,6 +1,12 @@
 {
     "Author": "Chalkos",
     "Name": "Marketbuddy",
-    "Description": "Helper for your day-to-day market operations",
-    "RepoUrl": "https://github.com/chalkos/Marketbuddy"
+    "Punchline": "Less clicks, more gil!",
+    "Description": "Helper for your day-to-day market operations.",
+    "RepoUrl": "https://github.com/chalkos/Marketbuddy",
+    "Tags": [],
+    "InternalName": "Marketbuddy",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": 4,
+    "LoadPriority": 0
 }
