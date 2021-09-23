@@ -2,19 +2,19 @@
     {
         "Author": "Chalkos",
         "Name": "Marketbuddy",
-        "Description": "Helper for your day-to-day market operations",
+        "Punchline": "Less clicks, more gil!",
+        "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.1.0.4",
-        "TestingAssemblyVersion": "0.1.0.4",
+        "AssemblyVersion": "0.2.0.1",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
-        "DalamudApiLevel": 3,
-        "IsHide": "False",
-        "IsTestingExclusive": "False",
-        "DownloadCount": 1,
-        "LastUpdate": 1632318321,
-        "DownloadLinkInstall": "https://github.com/Chalkos/Marketbuddy/raw/main/Marketbuddy.zip",
-        "DownloadLinkTesting": "https://github.com/Chalkos/Marketbuddy/raw/main/Marketbuddy.zip",
-        "DownloadLinkUpdate": "https://github.com/Chalkos/Marketbuddy/raw/main/Marketbuddy.zip"
+        "DalamudApiLevel": 4,
+        "DownloadLinkInstall": "https://github.com/chalkos/Marketbuddy/raw/api4/latest.zip",
+        "IsHide": false,
+        "IsTestingExclusive": false,
+        "DownloadLinkTesting": "https://github.com/chalkos/Marketbuddy/raw/api4/latest.zip",
+        "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/api4/latest.zip",
+        "DownloadCount": 0,
+        "LastUpdated": "1632409367"
     }
 ]
