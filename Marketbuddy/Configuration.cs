@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using Dalamud.Configuration;
 using Dalamud.Plugin;
 using static Marketbuddy.Common.Dalamud;
@@ -16,6 +17,8 @@ namespace Marketbuddy
         public bool AutoConfirmNewPrice { get; set; } = true;
         public bool HoldCtrlToPaste { get; set; } = true;
         
+        public bool AdjustMaxStackSizeInSellList { get; set; } = true;
+        public Vector2 AdjustMaxStackSizeInSellListOffset { get; set; } = new Vector2(77,10);
         public bool UseMaxStackSize { get; set; } = false;
         public int MaximumStackSize { get; set; } = 99;
         

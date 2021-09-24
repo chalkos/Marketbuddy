@@ -29,3 +29,13 @@ Simplifies updating more items with the same price:
 Each feature can be configured in the plugin config.
 
 Holding SHIFT prevents some automation, but you're better off just disabling whatever you don't want in the config.
+
+## Changelog
+
+* 0.2.1.0
+  * `/mbuddy` shows/hides the config window
+  * `/mbuddyconf` deprecated
+  * New option to adjust stack size on the retainer sell list addon (because opening the config everytime is annoying)
+* 0.2.0.0
+  * API4 support
+  * Add option to limit the stack size when posting new items
