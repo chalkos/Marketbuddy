@@ -10,8 +10,7 @@ Plugin for XivLauncher/Dalamud to help with your day-to-day market operations.
 
 ## Commands
 
-* `/mbuddy` does nothing useful (yet)
-* `/mbuddyconf` plugin config gui
+* `/mbuddy` plugin config
 
 ## Features
 
@@ -34,7 +33,7 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 * 0.2.1.0
   * `/mbuddy` shows/hides the config window
-  * `/mbuddyconf` deprecated
+  * `/mbuddyconf` removed
   * New option to adjust stack size on the retainer sell list addon (because opening the config everytime is annoying)
 * 0.2.0.0
   * API4 support
