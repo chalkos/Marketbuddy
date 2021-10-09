@@ -5,7 +5,7 @@ Plugin for XivLauncher/Dalamud to help with your day-to-day market operations.
 ## How to get
 
 1. Dalamud settings -> Experimental
-2. Add `https://raw.githubusercontent.com/Chalkos/Marketbuddy/api4/repo.json` and enable it
+2. Add `https://raw.githubusercontent.com/Chalkos/Marketbuddy/main/repo.json` and enable it
 3. Install from the plugin list
 
 ## Commands
@@ -31,6 +31,9 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.1
+  * api4 branch removed
+    * use the json from the main branch (it's above) to get updates
 * 0.2.1.0
   * `/mbuddy` shows/hides the config window
   * `/mbuddyconf` removed
