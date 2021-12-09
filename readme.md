@@ -32,6 +32,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 ## Changelog
 
 * 0.2.2.1
+  * set api version 5 (no code changes)
+* 0.2.2.1
   * api4 branch removed
     * use the json from the main branch (it's above) to get updates
 * 0.2.1.0
