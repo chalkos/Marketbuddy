@@ -100,6 +100,7 @@ namespace Marketbuddy
                 var AdjustMaxStackSizeInSellList = configuration.AdjustMaxStackSizeInSellList;
                 var AdjustMaxStackSizeInSellListOffset = configuration.AdjustMaxStackSizeInSellListOffset;
                 var MaximumStackSize = configuration.MaximumStackSize;
+                var UndercutPrice = configuration.UndercutPrice;
                 var UseMaxStackSize = configuration.UseMaxStackSize;
 
                 ImGui.Checkbox("Open current prices list when adjusting a price",
@@ -109,11 +110,12 @@ namespace Marketbuddy
                 ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it", ref HoldCtrlToPaste);
 
                 ImGui.Checkbox("Open price history together with current prices list", ref AutoOpenHistory);
-
-                ImGui.Checkbox("Clicking a price sets your price as that price with a 1gil undercut.",
+                ImGui.SetNextItemWidth(45);
+                ImGui.InputInt("gil undercut", ref UndercutPrice, 0);
+                ImGui.Checkbox(String.Format("Clicking a price sets your price as that price with a {0}gil undercut.", UndercutPrice),
                     ref AutoInputNewPrice);
 
-                ImGui.Checkbox("Clicking a price copies that price with a 1gil undercut to the clipboard.",
+                ImGui.Checkbox(String.Format("Clicking a price copies that price with a {0}gil undercut to the clipboard.", UndercutPrice),
                     ref SaveToClipboard);
 
                 ImGui.Checkbox(
@@ -144,6 +146,7 @@ namespace Marketbuddy
                     || AdjustMaxStackSizeInSellList != configuration.AdjustMaxStackSizeInSellList
                     || AdjustMaxStackSizeInSellListOffset != configuration.AdjustMaxStackSizeInSellListOffset
                     || MaximumStackSize != configuration.MaximumStackSize
+                    || UndercutPrice != configuration.UndercutPrice
                     || UseMaxStackSize != configuration.UseMaxStackSize;
 
                 if (changed)
@@ -160,6 +163,7 @@ namespace Marketbuddy
                     configuration.UseMaxStackSize = UseMaxStackSize;
                     configuration.MaximumStackSize =
                         MaximumStackSize <= 9999 ? MaximumStackSize >= 1 ? MaximumStackSize : 1 : 9999;
+                    configuration.UndercutPrice = UndercutPrice;
                     configuration.Save();
                 }
             }
