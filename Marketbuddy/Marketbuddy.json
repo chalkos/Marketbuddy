@@ -7,7 +7,7 @@
     "Tags": [],
     "InternalName": "Marketbuddy",
     "ApplicableVersion": "any",
-    "DalamudApiLevel": 5,
+    "DalamudApiLevel": 6,
     "LoadPriority": 0,
-    "Changelog": "0.2.2.1: set api version 5\nThere were no code changes as everything appears to be working."
+    "Changelog": "0.2.2.3: set api version 6\n0.2.2.2: set api version 5\nThere were no code changes as everything appears to be working."
 }

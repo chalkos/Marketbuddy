@@ -5,10 +5,10 @@
         "Punchline": "Less clicks, more gil!",
         "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.2.2.2",
+        "AssemblyVersion": "0.2.2.3",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
-        "DalamudApiLevel": 5,
+        "DalamudApiLevel": 6,
         "DownloadLinkInstall": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "IsHide": false,
         "IsTestingExclusive": false,
@@ -16,6 +16,6 @@
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
         "LastUpdated": "1632409367",
-        "Changelog": "0.2.2.1: set api version 5\nThere were no code changes as everything appears to be working."
+        "Changelog": "0.2.2.3: set api version 6\n0.2.2.2: set api version 5\nThere were no code changes as everything appears to be working."
     }
 ]

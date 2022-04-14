@@ -31,7 +31,9 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
-* 0.2.2.1
+* 0.2.2.3
+  * set api version 6 (no code changes)
+* 0.2.2.2
   * set api version 5 (no code changes)
 * 0.2.2.1
   * api4 branch removed
