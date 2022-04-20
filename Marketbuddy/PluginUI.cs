@@ -41,7 +41,7 @@ namespace Marketbuddy
         {
             if (!configuration.AdjustMaxStackSizeInSellList ||
                 !marketbuddy.MarketGuiEventHandler.AddonRetainerSellList_Position(out Vector2 position)) return;
-            
+
             var windowVisible = true;
             ImGui.SetNextWindowPos(position);
 
@@ -52,8 +52,8 @@ namespace Marketbuddy
             ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, hSpace);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, Vector2.One);
             if (ImGui.Begin("Marketbuddy_stacklimit", ref windowVisible,
-                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollWithMouse |
-                ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground))
+                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollWithMouse |
+                    ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground))
             {
                 var MaximumStackSize = configuration.MaximumStackSize;
                 var UseMaxStackSize = configuration.UseMaxStackSize;
@@ -67,7 +67,7 @@ namespace Marketbuddy
                 changed |= ImGui.InputInt("items", ref MaximumStackSize, 0);
 
                 ImGui.SameLine();
-                
+
                 if (changed)
                 {
                     configuration.UseMaxStackSize = UseMaxStackSize;
@@ -87,8 +87,8 @@ namespace Marketbuddy
             if (!SettingsVisible) return;
 
             if (ImGui.Begin("Marketbuddy config", ref _settingsVisible,
-                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
-                ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize))
+                    ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
+                    ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize))
             {
                 var AutoOpenComparePrices = configuration.AutoOpenComparePrices;
                 var HoldShiftToStop = configuration.HoldShiftToStop;
@@ -110,12 +110,14 @@ namespace Marketbuddy
                 ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it", ref HoldCtrlToPaste);
 
                 ImGui.Checkbox("Open price history together with current prices list", ref AutoOpenHistory);
-                ImGui.SetNextItemWidth(45);
-                ImGui.InputInt("gil undercut", ref UndercutPrice, 0);
-                ImGui.Checkbox(String.Format("Clicking a price sets your price as that price with a {0}gil undercut.", UndercutPrice),
-                    ref AutoInputNewPrice);
 
-                ImGui.Checkbox(String.Format("Clicking a price copies that price with a {0}gil undercut to the clipboard.", UndercutPrice),
+                ImGui.Checkbox("Clicking a price sets your price as that price with a", ref AutoInputNewPrice);
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(45);
+                ImGui.InputInt("gil undercut.", ref UndercutPrice, 0);
+
+                ImGui.Checkbox(
+                    $"Clicking a price copies that price with a {UndercutPrice}gil undercut to the clipboard.",
                     ref SaveToClipboard);
 
                 ImGui.Checkbox(
