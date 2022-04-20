@@ -43,18 +43,23 @@ namespace Marketbuddy
             if (!conf.AdjustMaxStackSizeInSellList ||
                 !marketbuddy.MarketGuiEventHandler.AddonRetainerSellList_Position(out Vector2 position)) return;
 
+            ImGuiWindowFlags flags = ImGuiWindowFlags.NoResize |
+                                     ImGuiWindowFlags.NoScrollbar |
+                                     ImGuiWindowFlags.NoScrollWithMouse |
+                                     ImGuiWindowFlags.AlwaysAutoResize |
+                                     ImGuiWindowFlags.NoTitleBar |
+                                     ImGuiWindowFlags.NoBackground;
+
             var windowVisible = true;
             ImGui.SetNextWindowPos(position);
 
             var hSpace = new Vector2(1, 0);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
             ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, hSpace);
-            ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, hSpace);
             ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, hSpace);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowMinSize, Vector2.One);
-            if (ImGui.Begin("Marketbuddy_stacklimit", ref windowVisible,
-                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollWithMouse |
-                    ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground))
+            ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, hSpace);
+            if (ImGui.Begin("Marketbuddy_stacklimit", ref windowVisible, flags))
             {
                 if (ImGui.Checkbox("Limit stack size to ", ref conf.UseMaxStackSize))
                     conf.Save();
@@ -64,6 +69,15 @@ namespace Marketbuddy
 
                 if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
                     MaximumStackSizeChanged();
+
+                ImGui.PopStyleVar();
+                ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(20, 0));
+
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(30);
+
+                if (ImGui.InputInt("gil undercut", ref conf.UndercutPrice, 0))
+                    conf.Save();
             }
 
             ImGui.PopStyleVar(5);
