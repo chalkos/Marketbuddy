@@ -31,6 +31,10 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.4
+  * allow setting a custom undercut amount
+  * some UI changes
+  * fix a bug that (with a certain configuration setup) would close the item window and leave the price list open
 * 0.2.2.3
   * set api version 6 (no code changes)
 * 0.2.2.2

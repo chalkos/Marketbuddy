@@ -9,5 +9,5 @@
     "ApplicableVersion": "any",
     "DalamudApiLevel": 6,
     "LoadPriority": 0,
-    "Changelog": "0.2.2.3: set api version 6\n0.2.2.2: set api version 5\nThere were no code changes as everything appears to be working."
+    "Changelog": "* 0.2.2.4\n  * allow setting a custom undercut amount\n  * some UI changes\n  * fix a bug that (with a certain configuration setup) would close the item window and leave the price list open\n* 0.2.2.3\n  * set api version 6 (no code changes)"
 }
