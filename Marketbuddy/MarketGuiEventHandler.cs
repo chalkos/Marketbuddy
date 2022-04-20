@@ -183,7 +183,7 @@ namespace Marketbuddy
                         //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
                         var price = getPricePerItem(nodeParam);
                         if (price > 0)
-                            SetPrice(price - 1);
+                            SetPrice(price - Configuration.UndercutPrice);
                     }
                     catch (Exception e)
                     {
