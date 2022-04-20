@@ -9,25 +9,24 @@ namespace Marketbuddy
     [Serializable]
     public class Configuration : IPluginConfiguration
     {
-        public bool HoldShiftToStop { get; set; } = true;
-        public bool AutoOpenComparePrices { get; set; } = true;
-        public bool AutoOpenHistory { get; set; } = true;
-        public bool SaveToClipboard { get; set; } = true;
-        public bool AutoInputNewPrice { get; set; } = true;
-        public bool AutoConfirmNewPrice { get; set; } = true;
-        public bool HoldCtrlToPaste { get; set; } = true;
-        
-        public bool AdjustMaxStackSizeInSellList { get; set; } = true;
-        public Vector2 AdjustMaxStackSizeInSellListOffset { get; set; } = new Vector2(77,10);
-        public bool UseMaxStackSize { get; set; } = false;
-        public int MaximumStackSize { get; set; } = 99;
-        public int UndercutPrice { get; set; } = 1;
-        
+        public bool HoldShiftToStop = true;
+        public bool AutoOpenComparePrices = true;
+        public bool AutoOpenHistory = true;
+        public bool SaveToClipboard = true;
+        public bool AutoInputNewPrice = true;
+        public bool AutoConfirmNewPrice = true;
+        public bool HoldCtrlToPaste = true;
+
+        public bool AdjustMaxStackSizeInSellList = true;
+        public Vector2 AdjustMaxStackSizeInSellListOffset = new Vector2(77, 10);
+        public bool UseMaxStackSize = false;
+        public int MaximumStackSize = 99;
+        public int UndercutPrice = 1;
+
         public int Version { get; set; } = 0;
 
         // the below exist just to make saving/loading less cumbersome
-        [NonSerialized]
-        private static Configuration? _cachedConfig;
+        [NonSerialized] private static Configuration? _cachedConfig;
 
         public void Save()
         {
@@ -38,13 +37,18 @@ namespace Marketbuddy
         {
             if (_cachedConfig != null)
                 return _cachedConfig;
-            
+
             if (PluginInterface.GetPluginConfig() is not Configuration config)
             {
                 config = new Configuration();
                 config.Save();
             }
-            
+            else
+            {
+                if (config.MaximumStackSize > 999)
+                    config.MaximumStackSize = 999;
+            }
+
             _cachedConfig = config;
             return _cachedConfig;
         }

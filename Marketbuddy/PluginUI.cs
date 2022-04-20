@@ -8,7 +8,7 @@ namespace Marketbuddy
     // to do any cleanup
     internal class PluginUI : IDisposable
     {
-        private Configuration configuration => Configuration.GetOrLoad();
+        private Configuration conf => Configuration.GetOrLoad();
 
         private Marketbuddy marketbuddy;
 
@@ -39,7 +39,7 @@ namespace Marketbuddy
 
         private void DrawOverlayWindow()
         {
-            if (!configuration.AdjustMaxStackSizeInSellList ||
+            if (!conf.AdjustMaxStackSizeInSellList ||
                 !marketbuddy.MarketGuiEventHandler.AddonRetainerSellList_Position(out Vector2 position)) return;
 
             var windowVisible = true;
@@ -55,27 +55,14 @@ namespace Marketbuddy
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoScrollWithMouse |
                     ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoBackground))
             {
-                var MaximumStackSize = configuration.MaximumStackSize;
-                var UseMaxStackSize = configuration.UseMaxStackSize;
-
-                bool changed =
-                    ImGui.Checkbox("Limit stack size to ", ref UseMaxStackSize);
+                if (ImGui.Checkbox("Limit stack size to ", ref conf.UseMaxStackSize))
+                    conf.Save();
 
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(30);
 
-                changed |= ImGui.InputInt("items", ref MaximumStackSize, 0);
-
-                ImGui.SameLine();
-
-                if (changed)
-                {
-                    configuration.UseMaxStackSize = UseMaxStackSize;
-                    configuration.MaximumStackSize = MaximumStackSize <= 9999
-                        ? MaximumStackSize >= 1 ? MaximumStackSize : 1
-                        : 9999;
-                    configuration.Save();
-                }
+                if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
+                    MaximumStackSizeChanged();
             }
 
             ImGui.PopStyleVar(5);
@@ -90,87 +77,62 @@ namespace Marketbuddy
                     ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
                     ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize))
             {
-                var AutoOpenComparePrices = configuration.AutoOpenComparePrices;
-                var HoldShiftToStop = configuration.HoldShiftToStop;
-                var HoldCtrlToPaste = configuration.HoldCtrlToPaste;
-                var AutoOpenHistory = configuration.AutoOpenHistory;
-                var AutoInputNewPrice = configuration.AutoInputNewPrice;
-                var SaveToClipboard = configuration.SaveToClipboard;
-                var AutoConfirmNewPrice = configuration.AutoConfirmNewPrice;
-                var AdjustMaxStackSizeInSellList = configuration.AdjustMaxStackSizeInSellList;
-                var AdjustMaxStackSizeInSellListOffset = configuration.AdjustMaxStackSizeInSellListOffset;
-                var MaximumStackSize = configuration.MaximumStackSize;
-                var UndercutPrice = configuration.UndercutPrice;
-                var UseMaxStackSize = configuration.UseMaxStackSize;
+                if (ImGui.Checkbox("Open current prices list when adjusting a price",
+                        ref conf.AutoOpenComparePrices))
+                    conf.Save();
+                if (ImGui.Checkbox("Holding SHIFT prevents the above", ref conf.HoldShiftToStop)) conf.Save();
 
-                ImGui.Checkbox("Open current prices list when adjusting a price",
-                    ref AutoOpenComparePrices);
-                ImGui.Checkbox("Holding SHIFT prevents the above", ref HoldShiftToStop);
+                if (ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it",
+                        ref conf.HoldCtrlToPaste))
+                    conf.Save();
 
-                ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it", ref HoldCtrlToPaste);
+                if (ImGui.Checkbox("Open price history together with current prices list", ref conf.AutoOpenHistory))
+                    conf.Save();
 
-                ImGui.Checkbox("Open price history together with current prices list", ref AutoOpenHistory);
-
-                ImGui.Checkbox("Clicking a price sets your price as that price with a", ref AutoInputNewPrice);
+                if (ImGui.Checkbox("Clicking a price sets your price as that price with a",
+                        ref conf.AutoInputNewPrice))
+                    conf.Save();
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(45);
-                ImGui.InputInt("gil undercut.", ref UndercutPrice, 0);
+                ImGui.InputInt("gil undercut.", ref conf.UndercutPrice, 0);
 
-                ImGui.Checkbox(
-                    $"Clicking a price copies that price with a {UndercutPrice}gil undercut to the clipboard.",
-                    ref SaveToClipboard);
+                if (ImGui.Checkbox(
+                        $"Clicking a price copies that price with a {conf.UndercutPrice}gil undercut to the clipboard.",
+                        ref conf.SaveToClipboard))
+                    conf.Save();
 
-                ImGui.Checkbox(
-                    "Closes the list (if open) and confirms the new price after selecting it from the list (or if holding CTRL).",
-                    ref AutoConfirmNewPrice);
+                if (ImGui.Checkbox(
+                        "Closes the list (if open) and confirms the new price after selecting it from the list (or if holding CTRL).",
+                        ref conf.AutoConfirmNewPrice))
+                    conf.Save();
 
-                ImGui.Checkbox("Adjust maximum stack size in retainer sell list addon ",
-                    ref AdjustMaxStackSizeInSellList);
+                if (ImGui.Checkbox("Adjust maximum stack size in retainer sell list addon ",
+                        ref conf.AdjustMaxStackSizeInSellList))
+                    conf.Save();
 
-                if (AdjustMaxStackSizeInSellList)
-                    ImGui.DragFloat2("Offset window", ref AdjustMaxStackSizeInSellListOffset, 1f, 1, float.MaxValue,
-                        "%.0f");
+                if (conf.AdjustMaxStackSizeInSellList)
+                    if (ImGui.DragFloat2("Offset window", ref conf.AdjustMaxStackSizeInSellListOffset, 1f, 1,
+                            float.MaxValue, "%.0f"))
+                        conf.Save();
 
-                ImGui.Checkbox("Limit stack size to ", ref UseMaxStackSize);
+                if (ImGui.Checkbox("Limit stack size to ", ref conf.UseMaxStackSize))
+                    conf.Save();
+
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(45);
-                ImGui.InputInt("items", ref MaximumStackSize, 0);
-
-
-                bool changed =
-                    AutoOpenComparePrices != configuration.AutoOpenComparePrices
-                    || HoldShiftToStop != configuration.HoldShiftToStop
-                    || HoldCtrlToPaste != configuration.HoldCtrlToPaste
-                    || AutoOpenHistory != configuration.AutoOpenHistory
-                    || AutoInputNewPrice != configuration.AutoInputNewPrice
-                    || SaveToClipboard != configuration.SaveToClipboard
-                    || AutoConfirmNewPrice != configuration.AutoConfirmNewPrice
-                    || AdjustMaxStackSizeInSellList != configuration.AdjustMaxStackSizeInSellList
-                    || AdjustMaxStackSizeInSellListOffset != configuration.AdjustMaxStackSizeInSellListOffset
-                    || MaximumStackSize != configuration.MaximumStackSize
-                    || UndercutPrice != configuration.UndercutPrice
-                    || UseMaxStackSize != configuration.UseMaxStackSize;
-
-                if (changed)
-                {
-                    configuration.AutoOpenComparePrices = AutoOpenComparePrices;
-                    configuration.HoldShiftToStop = HoldShiftToStop;
-                    configuration.HoldCtrlToPaste = HoldCtrlToPaste;
-                    configuration.AutoOpenHistory = AutoOpenHistory;
-                    configuration.AutoInputNewPrice = AutoInputNewPrice;
-                    configuration.SaveToClipboard = SaveToClipboard;
-                    configuration.AutoConfirmNewPrice = AutoConfirmNewPrice;
-                    configuration.AdjustMaxStackSizeInSellList = AdjustMaxStackSizeInSellList;
-                    configuration.AdjustMaxStackSizeInSellListOffset = AdjustMaxStackSizeInSellListOffset;
-                    configuration.UseMaxStackSize = UseMaxStackSize;
-                    configuration.MaximumStackSize =
-                        MaximumStackSize <= 9999 ? MaximumStackSize >= 1 ? MaximumStackSize : 1 : 9999;
-                    configuration.UndercutPrice = UndercutPrice;
-                    configuration.Save();
-                }
+                if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
+                    MaximumStackSizeChanged();
             }
 
             ImGui.End();
+        }
+
+        private void MaximumStackSizeChanged()
+        {
+            conf.MaximumStackSize = conf.MaximumStackSize <= 999
+                ? conf.MaximumStackSize >= 1 ? conf.MaximumStackSize : 1
+                : 999;
+            conf.Save();
         }
     }
 }
