@@ -90,16 +90,12 @@ namespace Marketbuddy
             }
 
 
-            if (!conf.AutoOpenComparePrices) PushStyleDisabled();
             DrawNestIndicator(1);
-            if (ImGui.Checkbox("Holding SHIFT prevents the above", ref conf.HoldShiftToStop))
-            {
-                if (!conf.AutoOpenComparePrices)
-                    conf.HoldShiftToStop = false;
+            if (ImGui.Checkbox(
+                    $"Holding SHIFT {(conf.AutoOpenComparePrices ? "prevents the above" : "does the above")}",
+                    ref conf.HoldShiftToStop))
                 conf.Save();
-            }
 
-            if (!conf.AutoOpenComparePrices) PopStyleDisabled();
 
             ImGui.Spacing();
             if (ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it",
@@ -156,6 +152,7 @@ namespace Marketbuddy
                     conf.AdjustMaxStackSizeInSellList = false;
                 conf.Save();
             }
+
             ImGui.SameLine();
             ImGui.SetNextItemWidth(45);
             if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))

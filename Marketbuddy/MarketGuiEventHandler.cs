@@ -129,8 +129,9 @@ namespace Marketbuddy
                 else
                     ChatGui.Print("Marketbuddy: Clipboard does not contain a valid price");
             }
-            else if (conf.AutoOpenComparePrices &&
-                     (!conf.HoldShiftToStop || !Keys[VirtualKey.SHIFT]))
+            else if (conf.AutoOpenComparePrices && !conf.HoldShiftToStop ||
+                     conf.AutoOpenComparePrices && conf.HoldShiftToStop && !Keys[VirtualKey.SHIFT] ||
+                     !conf.AutoOpenComparePrices && conf.HoldShiftToStop && Keys[VirtualKey.SHIFT])
             {
                 try
                 {
