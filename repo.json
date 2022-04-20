@@ -5,7 +5,7 @@
         "Punchline": "Less clicks, more gil!",
         "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.2.2.4",
+        "AssemblyVersion": "0.2.2.5",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
         "DalamudApiLevel": 6,
@@ -15,7 +15,7 @@
         "DownloadLinkTesting": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
-        "LastUpdated": "1632409368",
-        "Changelog": "* 0.2.2.4\n  * allow setting a custom undercut amount\n  * some UI changes\n  * fix a bug that (with a certain configuration setup) would close the item window and leave the price list open\n* 0.2.2.3\n  * set api version 6 (no code changes)"
+        "LastUpdated": "1632409469",
+        "Changelog": "* 0.2.2.5\n  * option: use SHIFT to open/not open the price history (previously only used to skip opening)\n* 0.2.2.4\n  * allow setting a custom undercut amount\n  * option: use ALT to open/not open the price history\n  * some other UI changes\n  * fix a bug that (with a certain configuration setup) would close the item window and leave the price list open\n* 0.2.2.3\n  * set api version 6 (no code changes)"
     }
 ]
