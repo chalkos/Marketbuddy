@@ -130,7 +130,8 @@ namespace Marketbuddy
                         conf.Save();
                     ImGui.SameLine();
                     ImGui.SetNextItemWidth(45);
-                    ImGui.InputInt("gil undercut.", ref conf.UndercutPrice, 0);
+                    if (ImGui.InputInt("gil undercut.", ref conf.UndercutPrice, 0))
+                        conf.Save();
 
                     if (ImGui.Checkbox(
                             $"Clicking a price copies that price with a {conf.UndercutPrice}gil undercut to the clipboard.",
