@@ -16,6 +16,7 @@ namespace Marketbuddy
         public bool AutoInputNewPrice = true;
         public bool AutoConfirmNewPrice = true;
         public bool HoldCtrlToPaste = true;
+        public bool HoldAltHistoryHandling = false;
 
         public bool AdjustMaxStackSizeInSellList = true;
         public Vector2 AdjustMaxStackSizeInSellListOffset = new Vector2(77, 10);
@@ -38,18 +39,24 @@ namespace Marketbuddy
             if (_cachedConfig != null)
                 return _cachedConfig;
 
-            if (PluginInterface.GetPluginConfig() is not Configuration config)
+            if (PluginInterface.GetPluginConfig() is not Configuration conf)
             {
-                config = new Configuration();
-                config.Save();
+                conf = new Configuration();
+                conf.Save();
             }
             else
             {
-                if (config.MaximumStackSize > 999)
-                    config.MaximumStackSize = 999;
+                if (conf.MaximumStackSize > 999)
+                    conf.MaximumStackSize = 999;
+                if (!conf.AutoInputNewPrice)
+                    conf.AutoConfirmNewPrice = false;
+                if (!conf.AutoOpenComparePrices)
+                    conf.HoldShiftToStop = false;
+                if (!conf.UseMaxStackSize)
+                    conf.AdjustMaxStackSizeInSellList = false;
             }
 
-            _cachedConfig = config;
+            _cachedConfig = conf;
             return _cachedConfig;
         }
     }

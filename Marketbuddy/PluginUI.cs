@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Dalamud.Interface;
 using ImGuiNET;
 
 namespace Marketbuddy
@@ -73,55 +74,107 @@ namespace Marketbuddy
         {
             if (!SettingsVisible) return;
 
-            if (ImGui.Begin("Marketbuddy config", ref _settingsVisible,
+            if (!ImGui.Begin("Marketbuddy config", ref _settingsVisible,
                     ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar |
                     ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize))
             {
-                if (ImGui.Checkbox("Open current prices list when adjusting a price",
-                        ref conf.AutoOpenComparePrices))
-                    conf.Save();
-                if (ImGui.Checkbox("Holding SHIFT prevents the above", ref conf.HoldShiftToStop)) conf.Save();
+                ImGui.End();
+                return;
+            }
 
-                if (ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it",
-                        ref conf.HoldCtrlToPaste))
-                    conf.Save();
+            if (ImGui.Checkbox("Open current prices list when adjusting a price", ref conf.AutoOpenComparePrices))
+            {
+                if (!conf.AutoOpenComparePrices)
+                    conf.HoldShiftToStop = false;
+                conf.Save();
+            }
 
-                if (ImGui.Checkbox("Open price history together with current prices list", ref conf.AutoOpenHistory))
-                    conf.Save();
 
-                if (ImGui.Checkbox("Clicking a price sets your price as that price with a",
-                        ref conf.AutoInputNewPrice))
-                    conf.Save();
-                ImGui.SameLine();
-                ImGui.SetNextItemWidth(45);
-                ImGui.InputInt("gil undercut.", ref conf.UndercutPrice, 0);
+            if (!conf.AutoOpenComparePrices) PushStyleDisabled();
+            DrawNestIndicator(1);
+            if (ImGui.Checkbox("Holding SHIFT prevents the above", ref conf.HoldShiftToStop))
+            {
+                if (!conf.AutoOpenComparePrices)
+                    conf.HoldShiftToStop = false;
+                conf.Save();
+            }
 
-                if (ImGui.Checkbox(
-                        $"Clicking a price copies that price with a {conf.UndercutPrice}gil undercut to the clipboard.",
-                        ref conf.SaveToClipboard))
-                    conf.Save();
+            if (!conf.AutoOpenComparePrices) PopStyleDisabled();
 
-                if (ImGui.Checkbox(
-                        "Closes the list (if open) and confirms the new price after selecting it from the list (or if holding CTRL).",
-                        ref conf.AutoConfirmNewPrice))
-                    conf.Save();
+            ImGui.Spacing();
+            if (ImGui.Checkbox("Holding CTRL pastes a price from the clipboard and confirms it",
+                    ref conf.HoldCtrlToPaste))
+                conf.Save();
 
-                if (ImGui.Checkbox("Adjust maximum stack size in retainer sell list addon ",
+            ImGui.Spacing();
+            if (ImGui.Checkbox("Open price history together with current prices list", ref conf.AutoOpenHistory))
+                conf.Save();
+
+
+            DrawNestIndicator(1);
+            if (ImGui.Checkbox($"Holding ALT {(conf.AutoOpenHistory ? "prevents the above" : "does the above")}",
+                    ref conf.HoldAltHistoryHandling))
+                conf.Save();
+
+            ImGui.Spacing();
+            ImGui.SetNextItemWidth(45);
+            ImGui.InputInt("gil undercut over the selected price", ref conf.UndercutPrice, 0);
+
+            DrawNestIndicator(1);
+            if (ImGui.Checkbox(
+                    $"Clicking a price copies that price with a {conf.UndercutPrice}gil undercut to the clipboard",
+                    ref conf.SaveToClipboard))
+                conf.Save();
+
+            DrawNestIndicator(1);
+            if (ImGui.Checkbox(
+                    $"Clicking a price sets your price as that price with a {conf.UndercutPrice}gil undercut",
+                    ref conf.AutoInputNewPrice))
+            {
+                if (!conf.AutoInputNewPrice)
+                    conf.AutoConfirmNewPrice = false;
+                conf.Save();
+            }
+
+            DrawNestIndicator(2);
+            if (!conf.AutoInputNewPrice) PushStyleDisabled();
+            if (ImGui.Checkbox(
+                    "Closes the price list and confirms the new price after selecting it from the list",
+                    ref conf.AutoConfirmNewPrice))
+            {
+                if (!conf.AutoInputNewPrice)
+                    conf.AutoConfirmNewPrice = false;
+                conf.Save();
+            }
+
+            if (!conf.AutoInputNewPrice) PopStyleDisabled();
+
+            ImGui.Spacing();
+            if (ImGui.Checkbox("Limit stack size to", ref conf.UseMaxStackSize))
+            {
+                if (!conf.UseMaxStackSize)
+                    conf.AdjustMaxStackSizeInSellList = false;
+                conf.Save();
+            }
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(45);
+            if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
+                MaximumStackSizeChanged();
+
+            if (conf.UseMaxStackSize)
+            {
+                DrawNestIndicator(1);
+                if (ImGui.Checkbox("Adjust maximum stack size in retainer sell list UI",
                         ref conf.AdjustMaxStackSizeInSellList))
                     conf.Save();
 
                 if (conf.AdjustMaxStackSizeInSellList)
-                    if (ImGui.DragFloat2("Offset window", ref conf.AdjustMaxStackSizeInSellListOffset, 1f, 1,
-                            float.MaxValue, "%.0f"))
+                {
+                    DrawNestIndicator(2);
+                    if (ImGui.DragFloat2("Position (relative to top left)", ref conf.AdjustMaxStackSizeInSellListOffset,
+                            1f, 1, float.MaxValue, "%.0f"))
                         conf.Save();
-
-                if (ImGui.Checkbox("Limit stack size to ", ref conf.UseMaxStackSize))
-                    conf.Save();
-
-                ImGui.SameLine();
-                ImGui.SetNextItemWidth(45);
-                if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
-                    MaximumStackSizeChanged();
+                }
             }
 
             ImGui.End();
@@ -133,6 +186,32 @@ namespace Marketbuddy
                 ? conf.MaximumStackSize >= 1 ? conf.MaximumStackSize : 1
                 : 999;
             conf.Save();
+        }
+
+        private static void DrawNestIndicator(int depth)
+        {
+            // https://github.com/DelvUI/DelvUI/blob/62b28ce1901f374ec167c26ce9fcf3afaf2adb13/DelvUI/Config/Tree/FieldNode.cs#L58
+
+            // This draws the L shaped symbols and padding to the left of config items collapsible under a checkbox.
+            // Shift cursor to the right to pad for children with depth more than 1.
+            // 26 is an arbitrary value I found to be around half the width of a checkbox
+            ImGui.SetCursorPos(ImGui.GetCursorPos() + new Vector2(26, 0) * Math.Max((depth - 1), 0));
+
+            var color = ImGui.GetStyle().Colors[(int)ImGuiCol.Text];
+
+            ImGui.TextColored(new Vector4(color.X, color.Y, color.Z, 0.9f), "\u2002\u2514");
+            //ImGui.TextColored(new Vector4(229f / 255f, 57f / 255f, 57f / 255f, 1f), "\u2002\u2514");
+            ImGui.SameLine();
+        }
+
+        private static void PushStyleDisabled()
+        {
+            ImGui.PushStyleVar(ImGuiStyleVar.Alpha, 0.2f);
+        }
+
+        private static void PopStyleDisabled()
+        {
+            ImGui.PopStyleVar();
         }
     }
 }

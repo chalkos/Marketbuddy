@@ -49,7 +49,7 @@ namespace Marketbuddy
 
         #endregion
 
-        internal Configuration Configuration => Configuration.GetOrLoad();
+        internal Configuration conf => Configuration.GetOrLoad();
 
         private IntPtr AddonRetainerSellList = IntPtr.Zero;
 
@@ -84,8 +84,8 @@ namespace Marketbuddy
                 return false;
 
             position = new Vector2(
-                ((AtkUnitBase*)AddonRetainerSellList)->X + Configuration.AdjustMaxStackSizeInSellListOffset.X,
-                ((AtkUnitBase*)AddonRetainerSellList)->Y + Configuration.AdjustMaxStackSizeInSellListOffset.Y
+                ((AtkUnitBase*)AddonRetainerSellList)->X + conf.AdjustMaxStackSizeInSellListOffset.X,
+                ((AtkUnitBase*)AddonRetainerSellList)->Y + conf.AdjustMaxStackSizeInSellListOffset.Y
             );
             return true;
         }
@@ -93,9 +93,9 @@ namespace Marketbuddy
         private IntPtr AddonRetainerSellList_OnFinalize_Delegate_Detour(IntPtr addon)
         {
             if (addon == AddonRetainerSellList)
-                PluginLog.Debug($"AddonRetainerSellList.OnFinalize (known: {addon:X})");
+                DebugMessage($"AddonRetainerSellList.OnFinalize (known: {addon:X})");
             else
-                PluginLog.Debug(
+                DebugMessage(
                     $"AddonRetainerSellList.OnFinalize (unk. have {AddonRetainerSellList:X} got {addon:X})");
             AddonRetainerSellList = IntPtr.Zero;
             return AddonRetainerSellList_OnFinalize_HW.Original(addon);
@@ -103,7 +103,7 @@ namespace Marketbuddy
 
         private IntPtr AddonRetainerSellList_OnSetup_Delegate_Detour(IntPtr addon, uint a2, IntPtr dataPtr)
         {
-            PluginLog.Debug($"AddonRetainerSellList.OnSetup (got: {addon:X})");
+            DebugMessage($"AddonRetainerSellList.OnSetup (got: {addon:X})");
             var result = AddonRetainerSellList_OnSetup_HW.Original(addon, a2, dataPtr);
             AddonRetainerSellList = addon;
             return result;
@@ -118,10 +118,10 @@ namespace Marketbuddy
 
         private unsafe IntPtr AddonRetainerSell_OnSetup_Delegate_Detour(IntPtr addon, uint a2, IntPtr dataPtr)
         {
-            PluginLog.Debug("AddonRetainerSell.OnSetup");
+            DebugMessage("AddonRetainerSell.OnSetup");
             var result = AddonRetainerSell_OnSetup_HW.Original(addon, a2, dataPtr);
 
-            if (Configuration.HoldCtrlToPaste && Keys[VirtualKey.CONTROL])
+            if (conf.HoldCtrlToPaste && Keys[VirtualKey.CONTROL])
             {
                 var cbValue = ImGui.GetClipboardText() ?? "";
                 if (int.TryParse(cbValue, out var priceValue) && priceValue > 0)
@@ -129,8 +129,8 @@ namespace Marketbuddy
                 else
                     ChatGui.Print("Marketbuddy: Clipboard does not contain a valid price");
             }
-            else if (Configuration.AutoOpenComparePrices &&
-                     (!Configuration.HoldShiftToStop || !Keys[VirtualKey.SHIFT]))
+            else if (conf.AutoOpenComparePrices &&
+                     (!conf.HoldShiftToStop || !Keys[VirtualKey.SHIFT]))
             {
                 try
                 {
@@ -151,10 +151,14 @@ namespace Marketbuddy
 
         private unsafe IntPtr AddonItemSearchResult_OnSetup_Delegate_Detour(IntPtr addon, uint a2, IntPtr dataPtr)
         {
-            PluginLog.Debug("AddonItemSearchResult.OnSetup");
+            DebugMessage("AddonItemSearchResult.OnSetup");
             var result = AddonItemSearchResult_OnSetup_HW.Original(addon, a2, dataPtr);
 
-            if (Configuration.AutoOpenHistory)
+            bool shouldOpenHistory = conf.AutoOpenHistory && !conf.HoldAltHistoryHandling
+                                     || conf.AutoOpenHistory && conf.HoldAltHistoryHandling && !Keys[VirtualKey.MENU]
+                                     || !conf.AutoOpenHistory && conf.HoldAltHistoryHandling && Keys[VirtualKey.MENU];
+
+            if (shouldOpenHistory)
                 try
                 {
                     //open history on opening the list
@@ -176,14 +180,14 @@ namespace Marketbuddy
             var result =
                 AddonItemSearchResult_ReceiveEvent_HW.Original(self, eventType, eventParam, eventStruct, nodeParam);
 
-            if (Configuration.AutoInputNewPrice || Configuration.SaveToClipboard)
+            if (conf.AutoInputNewPrice || conf.SaveToClipboard)
                 if (eventType == 35 && nodeParam != IntPtr.Zero) // && (*eventInfoStruct) != null ) // click
                     try
                     {
                         //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
                         var price = getPricePerItem(nodeParam);
                         if (price > 0)
-                            SetPrice(price - Configuration.UndercutPrice);
+                            SetPrice(price - conf.UndercutPrice);
                     }
                     catch (Exception e)
                     {
@@ -203,41 +207,38 @@ namespace Marketbuddy
                 (AtkComponentNumericInput*)retainerSell->UldManager.NodeList[15]->GetComponent();
             var quantityComponentNumericInput =
                 (AtkComponentNumericInput*)retainerSell->UldManager.NodeList[11]->GetComponent();
-            PluginLog.Debug($"componentNumericInput: {new IntPtr(priceComponentNumericInput).ToString("X")}");
-            PluginLog.Debug($"componentNumericInput: {new IntPtr(quantityComponentNumericInput).ToString("X")}");
+            DebugMessage($"componentNumericInput: {new IntPtr(priceComponentNumericInput).ToString("X")}");
+            DebugMessage($"componentNumericInput: {new IntPtr(quantityComponentNumericInput).ToString("X")}");
 
-            if (Configuration.AutoInputNewPrice)
+            if (conf.AutoInputNewPrice)
             {
                 priceComponentNumericInput->SetValue(newPrice);
 
-                if (Configuration.UseMaxStackSize)
+                if (conf.UseMaxStackSize)
                 {
                     var quantityValueString = Commons.Utf8StringToString(
                         ((AtkComponentNumericInputCustom*)quantityComponentNumericInput)->AtkTextNode->NodeText);
-                    PluginLog.Debug($"qty: {quantityValueString}");
+                    DebugMessage($"qty: {quantityValueString}");
                     if (int.TryParse(quantityValueString, out var quantityValue))
                     {
-                        if (quantityValue > Configuration.MaximumStackSize)
-                            quantityComponentNumericInput->SetValue(Configuration.MaximumStackSize);
+                        if (quantityValue > conf.MaximumStackSize)
+                            quantityComponentNumericInput->SetValue(conf.MaximumStackSize);
                     }
                 }
             }
 
-            if (Configuration.SaveToClipboard)
+            if (conf.SaveToClipboard)
                 ImGui.SetClipboardText(newPrice.ToString());
 
-            PluginLog.Debug($"Asking price of {newPrice} gil set and copied to clipboard.");
+            DebugMessage($"Asking price of {newPrice} gil set and copied to clipboard.");
 
-            if (!Configuration.AutoConfirmNewPrice) return;
-            
-            if (!(Configuration.HoldCtrlToPaste && Keys[VirtualKey.CONTROL]))
-            {
-                // Component::GUI::AtkComponentWindow.ReceiveEvent this=0x1AC801863B0 evt=EventType.CHANGE               a3=2   a4=0x1AC66640090 (src=0x1AC801863B0; tgt=0x1AC98B47EA0) a5=0x4AAAEFE388
-                var addonItemSearchResult = Commons.GetUnitBase("ItemSearchResult");
-                Commons.SendClick(new IntPtr(addonItemSearchResult->WindowNode->Component), EventType.CHANGE, 2,
-                    addonItemSearchResult->WindowNode->Component->UldManager
-                        .NodeList[6]->GetComponent()->OwnerNode);
-            }
+            if (!conf.AutoConfirmNewPrice) return;
+
+            // Component::GUI::AtkComponentWindow.ReceiveEvent this=0x1AC801863B0 evt=EventType.CHANGE               a3=2   a4=0x1AC66640090 (src=0x1AC801863B0; tgt=0x1AC98B47EA0) a5=0x4AAAEFE388
+            var addonItemSearchResult = Commons.GetUnitBase("ItemSearchResult");
+            Commons.SendClick(new IntPtr(addonItemSearchResult->WindowNode->Component), EventType.CHANGE, 2,
+                addonItemSearchResult->WindowNode->Component->UldManager
+                    .NodeList[6]->GetComponent()->OwnerNode);
 
             // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214B4D360E0 evt=EventType.CHANGE               a3=21  a4=0x214B920D2E0 (src=0x214B4D360E0; tgt=0x21460686550) a5=0xBB316FE6C8
             var addonRetainerSell = (AddonRetainerSell*)retainerSell;
@@ -251,26 +252,26 @@ namespace Marketbuddy
             // list item renderer component
             var listAtkComponentBase = *(AtkComponentBase**)nodeParam;
 
-            PluginLog.Debug(
+            DebugMessage(
                 $"component={(ulong)listAtkResNode->GetComponent():X}, childCount={listAtkResNode->ChildCount}, target={*(ulong*)nodeParam:X}, gotit={(ulong)listAtkComponentBase:X}");
 
             if (listAtkComponentBase == null) return 0;
             var uldManager = listAtkComponentBase->UldManager;
 
             var isMarketOpen = Commons.GetUnitBase("ItemSearch") != null;
-            PluginLog.Debug("1");
+            DebugMessage("1");
 
             if (isMarketOpen) return 0;
-            PluginLog.Debug("2");
+            DebugMessage("2");
 
             if (uldManager.NodeListCount < 14) return 0;
-            PluginLog.Debug("3");
+            DebugMessage("3");
 
             var singlePriceNode = (AtkTextNode*)uldManager.NodeList[10];
 
             if (singlePriceNode == null)
             {
-                PluginLog.Debug($"singlePriceNode == null {singlePriceNode == null}");
+                DebugMessage($"singlePriceNode == null {singlePriceNode == null}");
                 return 0;
             }
 
@@ -280,11 +281,18 @@ namespace Marketbuddy
                 .Replace(" ", "")
                 .Replace(".", "");
 
-            PluginLog.Debug(
+            DebugMessage(
                 $"priceString: '{priceString}', original: '{Commons.Utf8StringToString(singlePriceNode->NodeText)}'");
 
             if (!int.TryParse(priceString, out var priceValue)) return 0;
             return priceValue;
+        }
+
+        private void DebugMessage(string msg)
+        {
+#if DEBUG
+            PluginLog.Debug(msg);
+#endif
         }
     }
 }
