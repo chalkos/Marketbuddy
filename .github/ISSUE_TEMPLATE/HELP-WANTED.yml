@@ -1,0 +1,21 @@
+name: Help wanted
+description: For when you are having issues setting up Marketbuddy
+title: "[Help wanted]: "
+labels: [help wanted]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What's the issue?
+      description: Also tell us, what are you trying to do / achieve?
+      placeholder: Tell us what you see!
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: FFXIV Update
+      description: Whenever Final Fantasy has an update, XIVLauncher needs an update so please don't open issues during that window.
+      options:
+        - label: I have confirmed that I have the latest version of XIVLauncher and Marketbuddy.
+          required: true
