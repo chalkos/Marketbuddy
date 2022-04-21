@@ -188,8 +188,8 @@ namespace Marketbuddy
 
         private void UndercutPriceChanged()
         {
-            if (conf.UndercutPrice < 1)
-                conf.UndercutPrice = 1;
+            if (conf.UndercutPrice < 0)
+                conf.UndercutPrice = 0;
             conf.Save();
         }
 

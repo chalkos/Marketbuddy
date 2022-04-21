@@ -54,8 +54,8 @@ namespace Marketbuddy
                     conf.AutoConfirmNewPrice = false;
                 if (!conf.AutoOpenComparePrices)
                     conf.HoldShiftToStop = false;
-                if (conf.UndercutPrice < 1)
-                    conf.UndercutPrice = 1;
+                if (conf.UndercutPrice < 0)
+                    conf.UndercutPrice = 0;
             }
 
             _cachedConfig = conf;
