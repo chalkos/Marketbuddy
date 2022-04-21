@@ -61,9 +61,16 @@ namespace Marketbuddy
 
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(30);
-
                 if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
                     MaximumStackSizeChanged();
+
+                ImGui.PopStyleVar();
+                ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(20, 0));
+
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(30);
+                if (ImGui.InputInt("gil undercut", ref conf.UndercutPrice, 0))
+                    UndercutPriceChanged();
             }
 
             ImGui.PopStyleVar(5);
@@ -114,7 +121,8 @@ namespace Marketbuddy
 
             ImGui.Spacing();
             ImGui.SetNextItemWidth(45);
-            ImGui.InputInt("gil undercut over the selected price", ref conf.UndercutPrice, 0);
+            if (ImGui.InputInt("gil undercut over the selected price", ref conf.UndercutPrice, 0))
+                UndercutPriceChanged();
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
@@ -147,31 +155,24 @@ namespace Marketbuddy
 
             ImGui.Spacing();
             if (ImGui.Checkbox("Limit stack size to", ref conf.UseMaxStackSize))
-            {
-                if (!conf.UseMaxStackSize)
-                    conf.AdjustMaxStackSizeInSellList = false;
                 conf.Save();
-            }
 
             ImGui.SameLine();
             ImGui.SetNextItemWidth(45);
             if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
                 MaximumStackSizeChanged();
 
-            if (conf.UseMaxStackSize)
-            {
-                DrawNestIndicator(1);
-                if (ImGui.Checkbox("Adjust maximum stack size in retainer sell list UI",
-                        ref conf.AdjustMaxStackSizeInSellList))
-                    conf.Save();
+            DrawNestIndicator(1);
+            if (ImGui.Checkbox("Adjust maximum stack size in retainer sell list UI",
+                    ref conf.AdjustMaxStackSizeInSellList))
+                conf.Save();
 
-                if (conf.AdjustMaxStackSizeInSellList)
-                {
-                    DrawNestIndicator(2);
-                    if (ImGui.DragFloat2("Position (relative to top left)", ref conf.AdjustMaxStackSizeInSellListOffset,
-                            1f, 1, float.MaxValue, "%.0f"))
-                        conf.Save();
-                }
+            if (conf.AdjustMaxStackSizeInSellList)
+            {
+                DrawNestIndicator(2);
+                if (ImGui.DragFloat2("Position (relative to top left)", ref conf.AdjustMaxStackSizeInSellListOffset,
+                        1f, 1, float.MaxValue, "%.0f"))
+                    conf.Save();
             }
 
             ImGui.End();
@@ -182,6 +183,13 @@ namespace Marketbuddy
             conf.MaximumStackSize = conf.MaximumStackSize <= 999
                 ? conf.MaximumStackSize >= 1 ? conf.MaximumStackSize : 1
                 : 999;
+            conf.Save();
+        }
+
+        private void UndercutPriceChanged()
+        {
+            if (conf.UndercutPrice < 1)
+                conf.UndercutPrice = 1;
             conf.Save();
         }
 

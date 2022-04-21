@@ -186,13 +186,20 @@ namespace Marketbuddy
                     try
                     {
                         //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
-                        var price = getPricePerItem(nodeParam);
-                        if (price > 0)
-                            SetPrice(price - conf.UndercutPrice);
+                        var price = getPricePerItem(nodeParam) - conf.UndercutPrice;
+
+                        price =
+                            price < Configuration.MIN_PRICE ? Configuration.MIN_PRICE
+                            : price > Configuration.MAX_PRICE ? Configuration.MAX_PRICE
+                            : price;
+
+                        SetPrice(price);
                     }
                     catch (Exception e)
                     {
-                        PluginLog.Error(e.ToString());
+                        ChatGui.PrintError(
+                            "[Marketbuddy] Error getting price per item or setting the new price. Use /xllog to see the error and submit it in a github issue");
+                        PluginLog.Error(e, "Error getting price per item or setting the new price");
                     }
 
             return result;
@@ -238,7 +245,7 @@ namespace Marketbuddy
             // close ItemSearchResult
             // Component::GUI::AtkComponentWindow.ReceiveEvent this=0x1AC801863B0 evt=EventType.CHANGE               a3=2   a4=0x1AC66640090 (src=0x1AC801863B0; tgt=0x1AC98B47EA0) a5=0x4AAAEFE388
             var addonItemSearchResult = Commons.GetUnitBase("ItemSearchResult");
-            if(addonItemSearchResult != null)
+            if (addonItemSearchResult != null)
                 Commons.SendClick(new IntPtr(addonItemSearchResult->WindowNode->Component), EventType.CHANGE, 2,
                     addonItemSearchResult->WindowNode->Component->UldManager
                         .NodeList[6]->GetComponent()->OwnerNode);

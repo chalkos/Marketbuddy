@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using Dalamud.Configuration;
-using Dalamud.Plugin;
 using static Marketbuddy.Common.Dalamud;
 
 namespace Marketbuddy
@@ -9,6 +8,9 @@ namespace Marketbuddy
     [Serializable]
     public class Configuration : IPluginConfiguration
     {
+        [NonSerialized] public const int MIN_PRICE = 1;
+        [NonSerialized] public const int MAX_PRICE = 999999999;
+
         public bool HoldShiftToStop = true;
         public bool AutoOpenComparePrices = true;
         public bool AutoOpenHistory = true;
@@ -52,8 +54,8 @@ namespace Marketbuddy
                     conf.AutoConfirmNewPrice = false;
                 if (!conf.AutoOpenComparePrices)
                     conf.HoldShiftToStop = false;
-                if (!conf.UseMaxStackSize)
-                    conf.AdjustMaxStackSizeInSellList = false;
+                if (conf.UndercutPrice < 1)
+                    conf.UndercutPrice = 1;
             }
 
             _cachedConfig = conf;
