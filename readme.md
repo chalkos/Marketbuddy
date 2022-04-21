@@ -31,6 +31,11 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.7
+  * fix: prevent undercut from being set to less than 1
+  * new: adds undercut to the overlay
+  * fix: overlay no longer gets disabled when not limiting stack size
+  * fix: price set will always be between 1gil and 999999999gil
 * 0.2.2.6
   * fixes a crash when quickposting items using CTRL
 * 0.2.2.5
