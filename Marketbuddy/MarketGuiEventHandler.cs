@@ -235,12 +235,15 @@ namespace Marketbuddy
 
             if (!conf.AutoConfirmNewPrice) return;
 
+            // close ItemSearchResult
             // Component::GUI::AtkComponentWindow.ReceiveEvent this=0x1AC801863B0 evt=EventType.CHANGE               a3=2   a4=0x1AC66640090 (src=0x1AC801863B0; tgt=0x1AC98B47EA0) a5=0x4AAAEFE388
             var addonItemSearchResult = Commons.GetUnitBase("ItemSearchResult");
-            Commons.SendClick(new IntPtr(addonItemSearchResult->WindowNode->Component), EventType.CHANGE, 2,
-                addonItemSearchResult->WindowNode->Component->UldManager
-                    .NodeList[6]->GetComponent()->OwnerNode);
+            if(addonItemSearchResult != null)
+                Commons.SendClick(new IntPtr(addonItemSearchResult->WindowNode->Component), EventType.CHANGE, 2,
+                    addonItemSearchResult->WindowNode->Component->UldManager
+                        .NodeList[6]->GetComponent()->OwnerNode);
 
+            // click confirm on RetainerSell
             // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214B4D360E0 evt=EventType.CHANGE               a3=21  a4=0x214B920D2E0 (src=0x214B4D360E0; tgt=0x21460686550) a5=0xBB316FE6C8
             var addonRetainerSell = (AddonRetainerSell*)retainerSell;
             Commons.SendClick(new IntPtr(addonRetainerSell), EventType.CHANGE, 21, addonRetainerSell->Confirm);
