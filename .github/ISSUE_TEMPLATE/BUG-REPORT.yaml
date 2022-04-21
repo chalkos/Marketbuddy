@@ -1,6 +1,6 @@
 name: Bug
 description: For when you have found a bug
-title: "[Bug]: "
+title: ""
 labels: [bug]
 body:
   - type: textarea

@@ -1,6 +1,6 @@
 name: Help wanted
 description: For when you are having issues setting up Marketbuddy
-title: "[Help wanted]: "
+title: ""
 labels: [help wanted]
 body:
   - type: textarea
