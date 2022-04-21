@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.8
+  * fix: also allow undercut to be 0
 * 0.2.2.7
   * fix: prevent undercut from being set to less than 1
   * new: adds undercut to the overlay
