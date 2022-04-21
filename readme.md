@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.6
+  * fixes a crash when quickposting items using CTRL
 * 0.2.2.5
   * option: use SHIFT to open/not open the price history (previously only used to skip opening)
 * 0.2.2.4
