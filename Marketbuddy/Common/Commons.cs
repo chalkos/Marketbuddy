@@ -89,7 +89,7 @@ namespace Marketbuddy.Common
 
         public static unsafe AtkUnitBase* GetUnitBase(string name, int index = 1)
         {
-            return (AtkUnitBase*)Dalamud.GameGui.GetAddonByName(name, index);
+            return (AtkUnitBase*)Dalamud.GameGui.GetAddonByName(name, index).ToPointer();
         }
 
         internal static unsafe void SendClick(IntPtr arg1, EventType arg2, uint arg3, void* target)

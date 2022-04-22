@@ -208,6 +208,8 @@ namespace Marketbuddy
         private unsafe void SetPrice(int newPrice)
         {
             var retainerSell = Commons.GetUnitBase("RetainerSell");
+            if (retainerSell == null) return;
+            
             if (retainerSell->UldManager.NodeListCount != 23)
                 throw new MarketException("Unexpected fields in addon RetainerSell");
 
