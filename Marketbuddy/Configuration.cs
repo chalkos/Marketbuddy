@@ -48,8 +48,8 @@ namespace Marketbuddy
             }
             else
             {
-                if (conf.MaximumStackSize > 999)
-                    conf.MaximumStackSize = 999;
+                if (conf.MaximumStackSize > 9999)
+                    conf.MaximumStackSize = 9999;
                 if (!conf.AutoInputNewPrice)
                     conf.AutoConfirmNewPrice = false;
                 if (!conf.AutoOpenComparePrices)

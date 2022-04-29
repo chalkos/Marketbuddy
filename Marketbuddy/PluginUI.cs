@@ -180,9 +180,9 @@ namespace Marketbuddy
 
         private void MaximumStackSizeChanged()
         {
-            conf.MaximumStackSize = conf.MaximumStackSize <= 999
+            conf.MaximumStackSize = conf.MaximumStackSize <= 9999
                 ? conf.MaximumStackSize >= 1 ? conf.MaximumStackSize : 1
-                : 999;
+                : 9999;
             conf.Save();
         }
 
