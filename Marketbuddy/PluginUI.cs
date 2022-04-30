@@ -69,7 +69,7 @@ namespace Marketbuddy
 
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(30);
-                if (ImGui.InputInt("gil undercut", ref conf.UndercutPrice, 0))
+                if (ImGui.InputDouble("gil undercut", ref conf.UndercutPrice, 0))
                     UndercutPriceChanged();
             }
 
@@ -120,19 +120,25 @@ namespace Marketbuddy
                 conf.Save();
 
             ImGui.Spacing();
-            ImGui.SetNextItemWidth(45);
-            if (ImGui.InputInt("gil undercut over the selected price", ref conf.UndercutPrice, 0))
+            ImGui.SetNextItemWidth(75);
+            if (ImGui.InputDouble("gil undercut over the selected price. Subunitary for percentage", ref conf.UndercutPrice, 0, 0, String.Format("{0:0.##}", conf.UndercutPrice)))
                 UndercutPriceChanged();
+            
+            DrawNestIndicator(1);
+            ImGui.SetNextItemWidth(75);
+            if (ImGui.InputInt("Modulo to apply to final undercut price", ref conf.ModuloPrice, 0))
+                ModuloPriceChanged();
 
             DrawNestIndicator(1);
+
             if (ImGui.Checkbox(
-                    $"Clicking a price copies that price with a {conf.UndercutPrice}gil undercut to the clipboard",
+                    $"Clicking a price copies that price with a {((conf.UndercutPrice >=1) ? conf.UndercutPrice : $"{conf.UndercutPrice * 100}%")} gil undercut to the clipboard",
                     ref conf.SaveToClipboard))
                 conf.Save();
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
-                    $"Clicking a price sets your price as that price with a {conf.UndercutPrice}gil undercut",
+                    $"Clicking a price sets your price as that price with a {((conf.UndercutPrice >=1) ? conf.UndercutPrice : $"{conf.UndercutPrice * 100}%")} gil undercut",
                     ref conf.AutoInputNewPrice))
             {
                 if (!conf.AutoInputNewPrice)
@@ -190,6 +196,15 @@ namespace Marketbuddy
         {
             if (conf.UndercutPrice < 0)
                 conf.UndercutPrice = 0;
+            if (conf.UndercutPrice > 1)
+                conf.UndercutPrice = Math.Round(conf.UndercutPrice,0);
+            conf.Save();
+        }
+        
+        private void ModuloPriceChanged()
+        {
+            if (conf.ModuloPrice < 1)
+                conf.ModuloPrice = 1;
             conf.Save();
         }
 

@@ -186,7 +186,22 @@ namespace Marketbuddy
                     try
                     {
                         //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
-                        var price = getPricePerItem(nodeParam) - conf.UndercutPrice;
+                        var price = getPricePerItem(nodeParam);
+                        switch (conf.UndercutPrice)
+                        {
+                            case <= 0:
+                                break;
+                            case < 1:
+                                price = Convert.ToInt32(price * (1 - conf.UndercutPrice));
+                                break;
+                            default:
+                                price = Convert.ToInt32(price - conf.UndercutPrice);
+                                break;
+                        }
+                        ChatGui.Print($"{price}");
+                        price = price - (price % conf.ModuloPrice);
+                        ChatGui.Print($"{price}");
+
 
                         price =
                             price < Configuration.MIN_PRICE ? Configuration.MIN_PRICE

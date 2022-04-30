@@ -24,7 +24,8 @@ namespace Marketbuddy
         public Vector2 AdjustMaxStackSizeInSellListOffset = new Vector2(77, 10);
         public bool UseMaxStackSize = false;
         public int MaximumStackSize = 99;
-        public int UndercutPrice = 1;
+        public int ModuloPrice = 1;
+        public double UndercutPrice = 1;
 
         public int Version { get; set; } = 0;
 

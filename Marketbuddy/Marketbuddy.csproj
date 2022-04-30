@@ -46,7 +46,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.5" />
+        <PackageReference Include="DalamudPackager" Version="2.1.7" />
         <Reference Include="Dalamud" Private="False" />
         <Reference Include="FFXIVClientStructs" Private="False" />
         <Reference Include="ImGui.NET" Private="False" />
