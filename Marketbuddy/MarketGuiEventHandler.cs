@@ -198,9 +198,7 @@ namespace Marketbuddy
                                 price = Convert.ToInt32(price - conf.UndercutPrice);
                                 break;
                         }
-                        ChatGui.Print($"{price}");
                         price = price - (price % conf.ModuloPrice);
-                        ChatGui.Print($"{price}");
 
 
                         price =
