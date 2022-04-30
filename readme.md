@@ -31,7 +31,7 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
-* 0.2.2.10-l 
+* 0.2.2.11 
   * added percentage undercuts
 * 0.2.2.10
   * fix: limit max stack size to 9999 (up from 999)
