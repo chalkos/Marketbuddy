@@ -123,11 +123,11 @@ namespace Marketbuddy
 
             if (conf.HoldCtrlToPaste && Keys[VirtualKey.CONTROL])
             {
-                var cbValue = ImGui.GetClipboardText() ?? "";
+                var cbValue = ImGuiEx.GetClipboardText();
                 if (int.TryParse(cbValue, out var priceValue) && priceValue > 0)
                     SetPrice(priceValue);
                 else
-                    ChatGui.Print("Marketbuddy: Clipboard does not contain a valid price");
+                    ChatGui.PrintError("[Marketbuddy] Clipboard does not contain a valid price");
             }
             else if (conf.AutoOpenComparePrices && !conf.HoldShiftToStop ||
                      conf.AutoOpenComparePrices && conf.HoldShiftToStop && !Keys[VirtualKey.SHIFT] ||
