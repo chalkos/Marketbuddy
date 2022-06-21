@@ -38,7 +38,6 @@ namespace Marketbuddy
                     if (isDisposed) return;
 
                     DalamudInitialize(pluginInterface);
-                    Resolver.Initialize();
 
                     MarketGuiEventHandler = new MarketGuiEventHandler();
 
