@@ -9,5 +9,5 @@
     "ApplicableVersion": "any",
     "DalamudApiLevel": 6,
     "LoadPriority": 0,
-    "Changelog": "bugfix: handle clipboard exceptions"
+    "Changelog": "* 0.2.2.11\n  * fix: startup problem resolved\n  * fix: handle clipboard exceptions"
 }

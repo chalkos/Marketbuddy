@@ -32,6 +32,7 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 ## Changelog
 
 * 0.2.2.11
+  * fix: startup problem resolved
   * fix: handle clipboard exceptions
 * 0.2.2.10
   * fix: limit max stack size to 9999 (up from 999)
