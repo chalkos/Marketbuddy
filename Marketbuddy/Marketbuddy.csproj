@@ -4,7 +4,7 @@
         <OutputType>Library</OutputType>
         <Authors>Chalkos</Authors>
         <Title>Marketbuddy</Title>
-        <Version>0.2.2.12</Version>
+        <Version>0.2.2.13</Version>
         <Deterministic>true</Deterministic>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -12,16 +12,16 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net5.0-windows</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <OutputPath>$(AppData)\XIVLauncher\devPlugins\$(Title)\</OutputPath>
         <WarningLevel>4</WarningLevel>
         <ErrorReport>prompt</ErrorReport>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
@@ -39,25 +39,33 @@
 
     <PropertyGroup>
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-        <AssemblySearchPaths>
-            $(AssemblySearchPaths);
-            $(DalamudLibPath);
-        </AssemblySearchPaths>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.5" />
-        <Reference Include="Dalamud" Private="False" />
-        <Reference Include="FFXIVClientStructs" Private="False" />
-        <Reference Include="ImGui.NET" Private="False" />
-        <Reference Include="ImGuiScene" Private="False" />
-        <Reference Include="SharpDX" Private="False" />
-        <Reference Include="SharpDX.Mathematics" Private="False" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="Marketbuddy.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
+        <PackageReference Include="DalamudPackager" Version="2.1.8"/>
+        <Reference Include="Dalamud">
+            <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="FFXIVClientStructs">
+            <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="ImGui.NET">
+            <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="ImGuiScene">
+            <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="SharpDX">
+            <HintPath>$(DalamudLibPath)SharpDX.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="SharpDX.Mathematics">
+            <HintPath>$(DalamudLibPath)SharpDX.Mathematics.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
     </ItemGroup>
 </Project>

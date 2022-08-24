@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.13
+  * patch 6.2 fix, dalamud api7 and .net6
 * 0.2.2.12
   * fix: startup problem resolved
 * 0.2.2.11

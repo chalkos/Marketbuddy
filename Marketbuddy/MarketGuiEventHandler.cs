@@ -250,7 +250,7 @@ namespace Marketbuddy
             if (addonItemSearchResult != null)
                 Commons.SendClick(new IntPtr(addonItemSearchResult->WindowNode->Component), EventType.CHANGE, 2,
                     addonItemSearchResult->WindowNode->Component->UldManager
-                        .NodeList[6]->GetComponent()->OwnerNode);
+                        .NodeList[7]->GetComponent()->OwnerNode);
 
             // click confirm on RetainerSell
             // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214B4D360E0 evt=EventType.CHANGE               a3=21  a4=0x214B920D2E0 (src=0x214B4D360E0; tgt=0x21460686550) a5=0xBB316FE6C8
