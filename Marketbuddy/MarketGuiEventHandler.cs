@@ -45,7 +45,7 @@ namespace Marketbuddy
         private delegate IntPtr Addon_OnSetup_Delegate(IntPtr addon, uint a2, IntPtr dataPtr);
 
         // __int64 __fastcall Client::UI::AddonXXX_Finalize(__int64 a1)
-        private delegate IntPtr Addon_OnFinalize_Delegate(IntPtr addon);
+        private delegate void Addon_OnFinalize_Delegate(IntPtr addon);
 
         #endregion
 
@@ -90,7 +90,7 @@ namespace Marketbuddy
             return true;
         }
 
-        private IntPtr AddonRetainerSellList_OnFinalize_Delegate_Detour(IntPtr addon)
+        private void AddonRetainerSellList_OnFinalize_Delegate_Detour(IntPtr addon)
         {
             if (addon == AddonRetainerSellList)
                 DebugMessage($"AddonRetainerSellList.OnFinalize (known: {addon:X})");
@@ -98,7 +98,7 @@ namespace Marketbuddy
                 DebugMessage(
                     $"AddonRetainerSellList.OnFinalize (unk. have {AddonRetainerSellList:X} got {addon:X})");
             AddonRetainerSellList = IntPtr.Zero;
-            return AddonRetainerSellList_OnFinalize_HW.Original(addon);
+            AddonRetainerSellList_OnFinalize_HW.Original(addon);
         }
 
         private IntPtr AddonRetainerSellList_OnSetup_Delegate_Detour(IntPtr addon, uint a2, IntPtr dataPtr)
