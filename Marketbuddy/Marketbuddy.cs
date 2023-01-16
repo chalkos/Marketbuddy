@@ -6,9 +6,11 @@ using Dalamud.Game.Command;
 using Dalamud.Game.Text;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Utility.Signatures;
 using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using FFXIVClientStructs.Interop;
 using ImGuiNET;
 using Marketbuddy.Common;
 using Marketbuddy.Structs;
@@ -28,43 +30,35 @@ namespace Marketbuddy
         public string AssemblyLocation { get; set; } = Assembly.GetExecutingAssembly().Location;
         public string Name => "Marketbuddy";
 
-        private bool isDisposed = false;
-
         public Marketbuddy(DalamudPluginInterface pluginInterface)
         {
-            Task.Run(Resolver.Initialize)
-                .ContinueWith((_) =>
+            try
+            {
+                DalamudInitialize(pluginInterface);
+                Resolver.GetInstance.SetupSearchSpace(SigScanner.SearchBase);
+                Resolver.GetInstance.Resolve();
+                
+                MarketGuiEventHandler = new MarketGuiEventHandler();
+
+                PluginUi = new PluginUI(this);
+
+                Common.Dalamud.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
                 {
-                    if (isDisposed) return;
+                    HelpMessage = "Show plugin configuration window."
+                });
 
-                    DalamudInitialize(pluginInterface);
-
-                    MarketGuiEventHandler = new MarketGuiEventHandler();
-
-                    PluginUi = new PluginUI(this);
-
-                    Common.Dalamud.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
-                    {
-                        HelpMessage = "Show plugin configuration window."
-                    });
-
-                    PluginInterface.UiBuilder.Draw += DrawUi;
-                    PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUi;
-                }).ContinueWith(t =>
-                {
-                    var aggException = t.Exception!.Flatten();
-                    foreach (var e in aggException.InnerExceptions)
-                    {
-                        if (e is OperationCanceledException)
-                            continue;
-                        PluginLog.Error(e, "Error loading plugin");
-                    }
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                PluginInterface.UiBuilder.Draw += DrawUi;
+                PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUi;
+            }
+            catch (Exception e)
+            {
+                if (e is not OperationCanceledException)
+                    PluginLog.Error(e, "Error loading plugin");
+            }
         }
 
         public void Dispose()
         {
-            isDisposed = true;
             PluginInterface.UiBuilder.Draw -= DrawUi;
             PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUi;
             Common.Dalamud.CommandManager.RemoveHandler(commandName);

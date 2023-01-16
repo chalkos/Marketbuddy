@@ -31,6 +31,9 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.14
+  * patch 6.3 fix, dalamud api8 and .net7
+  * potentially fix a crash when exiting the game (thanks Aireil)
 * 0.2.2.13
   * patch 6.2 fix, dalamud api7 and .net6
 * 0.2.2.12
