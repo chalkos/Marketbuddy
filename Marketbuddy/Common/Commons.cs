@@ -41,7 +41,7 @@ namespace Marketbuddy.Common
             where T : Delegate
         {
             var addr = Dalamud.SigScanner.ScanText(signature);
-            PluginLog.Information("hooking function at {add}", addr);
+            PluginLog.Information($"hooking function at {addr:X}");
             var h = new Hook<T>(addr + addressOffset, detour);
             var wh = new HookWrapper<T>(h);
             if (enable) wh.Enable();

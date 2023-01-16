@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.15
+  * allow percentage-based undercutting (thanks Limiana)
 * 0.2.2.14
   * patch 6.3 fix, dalamud api8 and .net7
   * potentially fix a crash when exiting the game (thanks Aireil)

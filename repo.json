@@ -5,7 +5,7 @@
         "Punchline": "Less clicks, more gil!",
         "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.2.2.14",
+        "AssemblyVersion": "0.2.2.15",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
         "DalamudApiLevel": 8,
@@ -15,7 +15,7 @@
         "DownloadLinkTesting": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
-        "LastUpdated": "1632429669",
-        "Changelog": "patch 6.3 fix, dalamud api8 and .net7\npotentially fix a crash when exiting the game (thanks Aireil)"
+        "LastUpdated": "1632439669",
+        "Changelog": "- patch 6.3 fix, dalamud api8 and .net7\n- potentially fix a crash when exiting the game (thanks Aireil)\n- allow percentage-based undercutting (thanks Limiana)"
     }
 ]
