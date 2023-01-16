@@ -186,8 +186,10 @@ namespace Marketbuddy
                     try
                     {
                         //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
-                        var price = getPricePerItem(nodeParam) - conf.UndercutPrice;
-
+#pragma warning disable IDE0004
+                        //casts are necessary
+                        var price = conf.UndercutUsePercent?(int)((float)getPricePerItem(nodeParam) * (1f - (float)conf.UndercutPercent / 100f)) :getPricePerItem(nodeParam) - conf.UndercutPrice;
+#pragma warning restore IDE0004
                         price =
                             price < Configuration.MIN_PRICE ? Configuration.MIN_PRICE
                             : price > Configuration.MAX_PRICE ? Configuration.MAX_PRICE

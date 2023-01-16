@@ -25,6 +25,8 @@ namespace Marketbuddy
         public bool UseMaxStackSize = false;
         public int MaximumStackSize = 99;
         public int UndercutPrice = 1;
+        public bool UndercutUsePercent = false;
+        public int UndercutPercent = 1;
 
         public int Version { get; set; } = 0;
 

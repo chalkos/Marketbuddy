@@ -64,13 +64,26 @@ namespace Marketbuddy
                 if (ImGui.InputInt("items", ref conf.MaximumStackSize, 0))
                     MaximumStackSizeChanged();
 
-                ImGui.PopStyleVar();
-                ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(20, 0));
+                ImGui.SameLine();
+                ImGui.Dummy(new(20, 1));
 
                 ImGui.SameLine();
                 ImGui.SetNextItemWidth(30);
-                if (ImGui.InputInt("gil undercut", ref conf.UndercutPrice, 0))
-                    UndercutPriceChanged();
+                if (conf.UndercutUsePercent)
+                {
+                    if (ImGui.InputInt("##percundercut", ref conf.UndercutPercent, 0))
+                        UndercutPriceChanged();
+                }
+                else
+                {
+                    if (ImGui.InputInt("##gilundercut", ref conf.UndercutPrice, 0))
+                        UndercutPriceChanged();
+                }
+                ImGui.SameLine();
+                ImGui.SetNextItemWidth(40);
+                DrawUndercutTypeSelector();
+                ImGui.SameLine();
+                ImGui.Text("undercut");
             }
 
             ImGui.PopStyleVar(5);
@@ -121,18 +134,31 @@ namespace Marketbuddy
 
             ImGui.Spacing();
             ImGui.SetNextItemWidth(45);
-            if (ImGui.InputInt("gil undercut over the selected price", ref conf.UndercutPrice, 0))
-                UndercutPriceChanged();
+            if (conf.UndercutUsePercent)
+            {
+                if (ImGui.InputInt("##percundercut", ref conf.UndercutPercent, 0))
+                    UndercutPriceChanged();
+            }
+            else
+            {
+                if (ImGui.InputInt("##gilundercut", ref conf.UndercutPrice, 0))
+                    UndercutPriceChanged();
+            }
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(55);
+            DrawUndercutTypeSelector();
+            ImGui.SameLine();
+            ImGui.TextUnformatted("undercut over the selected price");
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
-                    $"Clicking a price copies that price with a {conf.UndercutPrice}gil undercut to the clipboard",
+                    $"Clicking a price copies that price with a {GetUndercutText()} undercut to the clipboard",
                     ref conf.SaveToClipboard))
                 conf.Save();
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
-                    $"Clicking a price sets your price as that price with a {conf.UndercutPrice}gil undercut",
+                    $"Clicking a price sets your price as that price with a {GetUndercutText()} undercut",
                     ref conf.AutoInputNewPrice))
             {
                 if (!conf.AutoInputNewPrice)
@@ -178,6 +204,28 @@ namespace Marketbuddy
             ImGui.End();
         }
 
+        private void DrawUndercutTypeSelector()
+        {
+            if (ImGui.BeginCombo("##undercuttype", conf.UndercutUsePercent ? "%" : "gil"))
+            {
+                if (ImGui.Selectable("Fixed gil undercut")) conf.UndercutUsePercent = false;
+                if (ImGui.Selectable("Percentage undercut")) conf.UndercutUsePercent = true;
+                ImGui.EndCombo();
+            }
+        }
+
+        private string GetUndercutText(bool escape = false)
+        {
+            if (conf.UndercutUsePercent)
+            {
+                return $"{conf.UndercutPercent}%" + (escape?"%":"");
+            }
+            else
+            {
+                return $"{conf.UndercutPrice}gil";
+            }
+        }
+
         private void MaximumStackSizeChanged()
         {
             conf.MaximumStackSize = conf.MaximumStackSize <= 9999
@@ -190,6 +238,8 @@ namespace Marketbuddy
         {
             if (conf.UndercutPrice < 0)
                 conf.UndercutPrice = 0;
+            if (conf.UndercutPercent > 99) conf.UndercutPercent = 99;
+            if (conf.UndercutPercent < 0) conf.UndercutPercent = 0;
             conf.Save();
         }
 
