@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.2.16
+  * update sigs for 6.4 (thanks Limiana)
 * 0.2.2.15
   * allow percentage-based undercutting (thanks Limiana)
 * 0.2.2.14
