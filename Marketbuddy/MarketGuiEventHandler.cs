@@ -17,13 +17,13 @@ namespace Marketbuddy
         #region Sigs, Hooks & Delegates declaration
 
         private readonly string AddonItemSearchResult_ReceiveEvent_Signature =
-            "4C 8B DC 53 56 48 81 EC ?? ?? ?? ?? 49 89 6B 08";
+            "48 8B C4 53 56 48 81 EC ?? ?? ?? ?? 48 89 68 08 BE";
 
         private readonly string AddonRetainerSell_OnSetup_Signature =
             "48 89 5C 24 ?? 55 56 57 48 83 EC 50 4C 89 64 24";
 
         private readonly string AddonItemSearchResult_OnSetup_Signature =
-            "40 53 41 56 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 89 AC 24";
+            "40 53 57 41 56 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 89 AC 24";
 
         private readonly string AddonRetainerSellList_OnSetup_Signature =
             "40 53 55 56 57 41 56 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B F9 49 8B F0 49 8D 48 10";
