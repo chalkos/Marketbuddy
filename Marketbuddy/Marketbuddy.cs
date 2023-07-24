@@ -49,6 +49,8 @@ namespace Marketbuddy
 
                 PluginInterface.UiBuilder.Draw += DrawUi;
                 PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUi;
+                IPCManager.Init();
+
             }
             catch (Exception e)
             {
@@ -59,6 +61,7 @@ namespace Marketbuddy
 
         public void Dispose()
         {
+            IPCManager.Shutdown();
             PluginInterface.UiBuilder.Draw -= DrawUi;
             PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUi;
             Common.Dalamud.CommandManager.RemoveHandler(commandName);

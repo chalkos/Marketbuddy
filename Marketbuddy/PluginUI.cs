@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using ImGuiNET;
 
 namespace Marketbuddy
@@ -100,6 +101,18 @@ namespace Marketbuddy
             {
                 ImGui.End();
                 return;
+            }
+
+            if(IPCManager.Locks.Count > 0)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+                ImGuiHelpers.SafeTextWrapped($"Lock commands has been received from these plugins and Marketbuddy operation is fully halted:");
+                ImGui.TextUnformatted($"{string.Join("\n", IPCManager.Locks)}");
+                if(ImGui.Button("Release locks"))
+                {
+                    IPCManager.Locks.Clear();
+                }
+                ImGui.PopStyleColor();
             }
 
             if (ImGui.Checkbox("Open current prices list when adjusting a price", ref conf.AutoOpenComparePrices))
