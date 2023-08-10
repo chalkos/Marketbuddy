@@ -27,6 +27,7 @@ namespace Marketbuddy
         public int UndercutPrice = 1;
         public bool UndercutUsePercent = false;
         public int UndercutPercent = 1;
+        public bool AllowNegative = false;
 
         public int Version { get; set; } = 0;
 
