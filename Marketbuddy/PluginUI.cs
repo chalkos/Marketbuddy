@@ -2,7 +2,6 @@
 using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
-using Dalamud.Interface.Components;
 using ImGuiNET;
 
 namespace Marketbuddy
@@ -163,9 +162,6 @@ namespace Marketbuddy
             DrawUndercutTypeSelector();
             ImGui.SameLine();
             ImGui.TextUnformatted("undercut over the selected price");
-            DrawNestIndicator(1);
-            ImGui.Checkbox($"Allow negative values", ref conf.AllowNegative);
-            ImGuiComponents.HelpMarker($"By setting negative value, your price will be set higher by that amount when clicking on an entry.");
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
@@ -253,10 +249,10 @@ namespace Marketbuddy
 
         private void UndercutPriceChanged()
         {
-            if (!conf.AllowNegative && conf.UndercutPrice < 0)
+            if (conf.UndercutPrice < 0)
                 conf.UndercutPrice = 0;
             if (conf.UndercutPercent > 99) conf.UndercutPercent = 99;
-            if (!conf.AllowNegative && conf.UndercutPercent < 0) conf.UndercutPercent = 0;
+            if (conf.UndercutPercent < 0) conf.UndercutPercent = 0;
             conf.Save();
         }
 
