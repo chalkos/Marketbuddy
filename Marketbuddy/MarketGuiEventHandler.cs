@@ -144,7 +144,7 @@ namespace Marketbuddy
                     }
                     catch (Exception ex)
                     {
-                        PluginLog.Error(ex, "Houston, we have a problem");
+                        Log.Error(ex, "Houston, we have a problem");
                     }
                 }
             }
@@ -174,7 +174,7 @@ namespace Marketbuddy
                     }
                     catch (Exception ex)
                     {
-                        PluginLog.Error(ex, "Houston, we have a problem");
+                        Log.Error(ex, "Houston, we have a problem");
                     }
             }
             return result;
@@ -207,7 +207,7 @@ namespace Marketbuddy
                         {
                             ChatGui.PrintError(
                                 "[Marketbuddy] Error getting price per item or setting the new price. Use /xllog to see the error and submit it in a github issue");
-                            PluginLog.Error(e, "Error getting price per item or setting the new price");
+                            Log.Error(e, "Error getting price per item or setting the new price");
                         }
             }
             return result;
@@ -312,7 +312,7 @@ namespace Marketbuddy
         private void DebugMessage(string msg)
         {
 #if DEBUG
-            PluginLog.Debug(msg);
+            Dalamud.Log.Debug(msg);
 #endif
         }
     }

@@ -41,7 +41,7 @@ namespace Marketbuddy.Common
 
         public void Dispose()
         {
-            PluginLog.Information("Disposing of {cdelegate}", typeof(T).Name);
+            Dalamud.Log.Information("Disposing of {cdelegate}", typeof(T).Name);
             Disable();
             disposed = true;
             wrappedHook?.Dispose();

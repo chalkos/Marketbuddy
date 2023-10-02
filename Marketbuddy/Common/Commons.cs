@@ -33,7 +33,7 @@ namespace Marketbuddy.Common
             }
             catch (Exception e)
             {
-                PluginLog.Error(e, "Error unloading plugin");
+                Dalamud.Log.Error(e, "Error unloading plugin");
             }
         }
 
@@ -41,8 +41,8 @@ namespace Marketbuddy.Common
             where T : Delegate
         {
             var addr = Dalamud.SigScanner.ScanText(signature);
-            PluginLog.Information($"hooking function at {addr:X}");
-            var h = new Hook<T>(addr + addressOffset, detour);
+            Dalamud.Log.Information($"hooking function at {addr:X}");
+            var h = Dalamud.Hook.HookFromAddress<T>(addr + addressOffset, detour);
             var wh = new HookWrapper<T>(h);
             if (enable) wh.Enable();
             HookList.Add(wh);

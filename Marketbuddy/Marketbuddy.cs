@@ -55,7 +55,7 @@ namespace Marketbuddy
             catch (Exception e)
             {
                 if (e is not OperationCanceledException)
-                    PluginLog.Error(e, "Error loading plugin");
+                    Log.Error(e, "Error loading plugin");
             }
         }
 
