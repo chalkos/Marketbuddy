@@ -31,6 +31,9 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.3.0
+  * Add IPC to allow other plugins to request operation halting (by Limiana)
+  * update sigs for 6.5 (thanks Limiana)
 * 0.2.2.16
   * update sigs for 6.4 (thanks Limiana)
 * 0.2.2.15

@@ -5,7 +5,7 @@
         "Punchline": "Less clicks, more gil!",
         "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.2.2.16",
+        "AssemblyVersion": "0.2.3.0",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
         "DalamudApiLevel": 8,
@@ -15,7 +15,7 @@
         "DownloadLinkTesting": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
-        "LastUpdated": "1632449669",
-        "Changelog": "- update sigs for 6.4 (thanks Limiana)"
+        "LastUpdated": "1632469669",
+        "Changelog": "- Add IPC to allow other plugins to request operation halting (by Limiana)\n- update sigs for 6.5 (thanks Limiana)"
     }
 ]
