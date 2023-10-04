@@ -121,28 +121,31 @@ namespace Marketbuddy
             DebugMessage("AddonRetainerSell.OnSetup");
             var result = AddonRetainerSell_OnSetup_HW.Original(addon, a2, dataPtr);
 
-            if (conf.HoldCtrlToPaste && Keys[VirtualKey.CONTROL])
+            if (!IPCManager.IsLocked)
             {
-                var cbValue = ImGuiEx.GetClipboardText();
-                if (int.TryParse(cbValue, out var priceValue) && priceValue > 0)
-                    SetPrice(priceValue);
-                else
-                    ChatGui.PrintError("[Marketbuddy] Clipboard does not contain a valid price");
-            }
-            else if (conf.AutoOpenComparePrices && !conf.HoldShiftToStop ||
-                     conf.AutoOpenComparePrices && conf.HoldShiftToStop && !Keys[VirtualKey.SHIFT] ||
-                     !conf.AutoOpenComparePrices && conf.HoldShiftToStop && Keys[VirtualKey.SHIFT])
-            {
-                try
+                if (conf.HoldCtrlToPaste && Keys[VirtualKey.CONTROL])
                 {
-                    //open compare prices list on opening sell price selection
-                    var comparePrices = ((AddonRetainerSell*)addon)->ComparePrices->AtkComponentBase.OwnerNode;
-                    // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214C05CB480 evt=EventType.CHANGE               a3=4   a4=0x2146C18C210 (src=0x214C05CB480; tgt=0x214606863B0) a5=0xBB316FE6C8
-                    Commons.SendClick(addon, EventType.CHANGE, 4, comparePrices);
+                    var cbValue = ImGuiEx.GetClipboardText();
+                    if (int.TryParse(cbValue, out var priceValue) && priceValue > 0)
+                        SetPrice(priceValue);
+                    else
+                        ChatGui.PrintError("[Marketbuddy] Clipboard does not contain a valid price");
                 }
-                catch (Exception ex)
+                else if (conf.AutoOpenComparePrices && !conf.HoldShiftToStop ||
+                         conf.AutoOpenComparePrices && conf.HoldShiftToStop && !Keys[VirtualKey.SHIFT] ||
+                         !conf.AutoOpenComparePrices && conf.HoldShiftToStop && Keys[VirtualKey.SHIFT])
                 {
-                    PluginLog.Error(ex, "Houston, we have a problem");
+                    try
+                    {
+                        //open compare prices list on opening sell price selection
+                        var comparePrices = ((AddonRetainerSell*)addon)->ComparePrices->AtkComponentBase.OwnerNode;
+                        // Client::UI::AddonRetainerSell.ReceiveEvent this=0x214C05CB480 evt=EventType.CHANGE               a3=4   a4=0x2146C18C210 (src=0x214C05CB480; tgt=0x214606863B0) a5=0xBB316FE6C8
+                        Commons.SendClick(addon, EventType.CHANGE, 4, comparePrices);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Houston, we have a problem");
+                    }
                 }
             }
 
@@ -155,23 +158,25 @@ namespace Marketbuddy
             DebugMessage("AddonItemSearchResult.OnSetup");
             var result = AddonItemSearchResult_OnSetup_HW.Original(addon, a2, dataPtr);
 
-            bool shouldOpenHistory = conf.AutoOpenHistory && !conf.HoldAltHistoryHandling
+            if (!IPCManager.IsLocked)
+            {
+                bool shouldOpenHistory = conf.AutoOpenHistory && !conf.HoldAltHistoryHandling
                                      || conf.AutoOpenHistory && conf.HoldAltHistoryHandling && !Keys[VirtualKey.MENU]
                                      || !conf.AutoOpenHistory && conf.HoldAltHistoryHandling && Keys[VirtualKey.MENU];
 
-            if (shouldOpenHistory)
-                try
-                {
-                    //open history on opening the list
-                    var history = ((AddonItemSearchResult*)addon)->History->AtkComponentBase.OwnerNode;
-                    //Client::UI::AddonItemSearchResult.ReceiveEvent this=0x1CC2BF42BD0 evt=EventType.CHANGE               a3=23  a4=0x1CCD86C1460 a5=0x90EF96E598
-                    Commons.SendClick(addon, EventType.CHANGE, 23, history);
-                }
-                catch (Exception ex)
-                {
-                    PluginLog.Error(ex, "Houston, we have a problem");
-                }
-
+                if (shouldOpenHistory)
+                    try
+                    {
+                        //open history on opening the list
+                        var history = ((AddonItemSearchResult*)addon)->History->AtkComponentBase.OwnerNode;
+                        //Client::UI::AddonItemSearchResult.ReceiveEvent this=0x1CC2BF42BD0 evt=EventType.CHANGE               a3=23  a4=0x1CCD86C1460 a5=0x90EF96E598
+                        Commons.SendClick(addon, EventType.CHANGE, 23, history);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Houston, we have a problem");
+                    }
+            }
             return result;
         }
 
@@ -180,30 +185,31 @@ namespace Marketbuddy
         {
             var result =
                 AddonItemSearchResult_ReceiveEvent_HW.Original(self, eventType, eventParam, eventStruct, nodeParam);
-
-            if (conf.AutoInputNewPrice || conf.SaveToClipboard)
-                if (eventType == 35 && nodeParam != IntPtr.Zero) // && (*eventInfoStruct) != null ) // click
-                    try
-                    {
-                        //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
+            if (!IPCManager.IsLocked)
+            {
+                if (conf.AutoInputNewPrice || conf.SaveToClipboard)
+                    if (eventType == 35 && nodeParam != IntPtr.Zero) // && (*eventInfoStruct) != null ) // click
+                        try
+                        {
+                            //AtkUldManager uldManager = (*eventInfoStruct)->UldManager;
 #pragma warning disable IDE0004
-                        //casts are necessary
-                        var price = conf.UndercutUsePercent?(int)((float)getPricePerItem(nodeParam) * (1f - (float)conf.UndercutPercent / 100f)) :getPricePerItem(nodeParam) - conf.UndercutPrice;
+                            //casts are necessary
+                            var price = conf.UndercutUsePercent ? (int)((float)getPricePerItem(nodeParam) * (1f - (float)conf.UndercutPercent / 100f)) : getPricePerItem(nodeParam) - conf.UndercutPrice;
 #pragma warning restore IDE0004
-                        price =
-                            price < Configuration.MIN_PRICE ? Configuration.MIN_PRICE
-                            : price > Configuration.MAX_PRICE ? Configuration.MAX_PRICE
-                            : price;
+                            price =
+                                price < Configuration.MIN_PRICE ? Configuration.MIN_PRICE
+                                : price > Configuration.MAX_PRICE ? Configuration.MAX_PRICE
+                                : price;
 
-                        SetPrice(price);
-                    }
-                    catch (Exception e)
-                    {
-                        ChatGui.PrintError(
-                            "[Marketbuddy] Error getting price per item or setting the new price. Use /xllog to see the error and submit it in a github issue");
-                        PluginLog.Error(e, "Error getting price per item or setting the new price");
-                    }
-
+                            SetPrice(price);
+                        }
+                        catch (Exception e)
+                        {
+                            ChatGui.PrintError(
+                                "[Marketbuddy] Error getting price per item or setting the new price. Use /xllog to see the error and submit it in a github issue");
+                            Log.Error(e, "Error getting price per item or setting the new price");
+                        }
+            }
             return result;
         }
 
@@ -306,7 +312,7 @@ namespace Marketbuddy
         private void DebugMessage(string msg)
         {
 #if DEBUG
-            PluginLog.Debug(msg);
+            Dalamud.Log.Debug(msg);
 #endif
         }
     }

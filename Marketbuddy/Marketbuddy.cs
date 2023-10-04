@@ -49,16 +49,19 @@ namespace Marketbuddy
 
                 PluginInterface.UiBuilder.Draw += DrawUi;
                 PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUi;
+                IPCManager.Init();
+
             }
             catch (Exception e)
             {
                 if (e is not OperationCanceledException)
-                    PluginLog.Error(e, "Error loading plugin");
+                    Log.Error(e, "Error loading plugin");
             }
         }
 
         public void Dispose()
         {
+            IPCManager.Shutdown();
             PluginInterface.UiBuilder.Draw -= DrawUi;
             PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUi;
             Common.Dalamud.CommandManager.RemoveHandler(commandName);
