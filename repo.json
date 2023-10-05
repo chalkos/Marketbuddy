@@ -8,7 +8,7 @@
         "AssemblyVersion": "0.2.3.0",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
-        "DalamudApiLevel": 8,
+        "DalamudApiLevel": 9,
         "DownloadLinkInstall": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "IsHide": false,
         "IsTestingExclusive": false,
