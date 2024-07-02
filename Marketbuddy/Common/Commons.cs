@@ -99,7 +99,7 @@ namespace Marketbuddy.Common
 
         internal static unsafe void SendClick(IntPtr arg1, EventType arg2, uint arg3, void* target, IntPtr arg5)
         {
-            var receiveEvent = GetReceiveEventDelegate((AtkEventListener*)arg1);
+            var listener = (AtkEventListener*)arg1;
 
             var arg4 = Marshal.AllocHGlobal(0x40);
             for (var i = 0; i < 0x40; i++)
@@ -115,18 +115,10 @@ namespace Marketbuddy.Common
                     Marshal.WriteByte(arg5, i, 0);
             }
 
-            receiveEvent(arg1, arg2, arg3, arg4, arg5);
+            listener->ReceiveEvent((AtkEventType)arg2, (int)arg3, (AtkEvent*)arg4, (AtkEventData*)arg5);
 
             Marshal.FreeHGlobal(arg4);
             Marshal.FreeHGlobal(arg5);
         }
-
-        private static unsafe ReceiveEventDelegate GetReceiveEventDelegate(AtkEventListener* eventListener)
-        {
-            var receiveEventAddress = new IntPtr(eventListener->vfunc[2]);
-            return Marshal.GetDelegateForFunctionPointer<ReceiveEventDelegate>(receiveEventAddress);
-        }
-
-        private delegate void ReceiveEventDelegate(IntPtr addon, EventType evt, uint a3, IntPtr a4, IntPtr a5);
     }
 }

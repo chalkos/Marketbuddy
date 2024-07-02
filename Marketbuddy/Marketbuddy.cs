@@ -30,13 +30,11 @@ namespace Marketbuddy
         public string AssemblyLocation { get; set; } = Assembly.GetExecutingAssembly().Location;
         public string Name => "Marketbuddy";
 
-        public Marketbuddy(DalamudPluginInterface pluginInterface)
+        public Marketbuddy(IDalamudPluginInterface pluginInterface)
         {
             try
             {
                 DalamudInitialize(pluginInterface);
-                Resolver.GetInstance.SetupSearchSpace(SigScanner.SearchBase);
-                Resolver.GetInstance.Resolve();
                 
                 MarketGuiEventHandler = new MarketGuiEventHandler();
 
