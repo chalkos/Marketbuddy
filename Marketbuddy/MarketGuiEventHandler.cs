@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Numerics;
+using Dalamud.Game.Addon.Lifecycle;
+using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Text;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.Attributes;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
@@ -12,114 +16,71 @@ using static Marketbuddy.Common.Dalamud;
 
 namespace Marketbuddy
 {
-    public class MarketGuiEventHandler : IDisposable
+    public unsafe class MarketGuiEventHandler : IDisposable
     {
-        #region Sigs, Hooks & Delegates declaration
-
-        private readonly string AddonItemSearchResult_ReceiveEvent_Signature =
-            "48 8B C4 53 56 48 81 EC ?? ?? ?? ?? 48 89 68 08 BE";
-
-        private readonly string AddonRetainerSell_OnSetup_Signature =
-            "48 89 5C 24 ?? 55 56 57 48 83 EC 50 4C 89 64 24";
-
-        private readonly string AddonItemSearchResult_OnSetup_Signature =
-            "40 53 57 41 56 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 89 AC 24";
-
-        private readonly string AddonRetainerSellList_OnSetup_Signature =
-            "40 53 55 56 57 41 56 48 81 EC ?? ?? ?? ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B F9 49 8B F0 49 8D 48 10";
-
-        private readonly string AddonRetainerSellList_OnFinalize_Signature =
-            "40 53 48 83 EC 20 80 B9 ?? ?? ?? ?? ?? 48 8B D9 74 0E 45 33 C9";
-
-        private HookWrapper<Addon_ReceiveEvent_Delegate> AddonItemSearchResult_ReceiveEvent_HW;
-        private HookWrapper<Addon_OnSetup_Delegate> AddonRetainerSell_OnSetup_HW;
-        private HookWrapper<Addon_OnSetup_Delegate> AddonItemSearchResult_OnSetup_HW;
-        private HookWrapper<Addon_OnSetup_Delegate> AddonRetainerSellList_OnSetup_HW;
-        private HookWrapper<Addon_OnFinalize_Delegate> AddonRetainerSellList_OnFinalize_HW;
-
-        // __int64 __fastcall Client::UI::AddonXXX_ReceiveEvent(__int64 a1, __int16 a2, int a3, __int64 a4, __int64* a5)
-        private delegate IntPtr Addon_ReceiveEvent_Delegate(IntPtr self, ushort eventType,
-            uint eventParam, IntPtr eventStruct, IntPtr /* AtkResNode* */ nodeParam);
-
-        // __int64 __fastcall Client::UI::AddonXXX_OnSetup(__int64 a1, unsigned int a2, __int64 a3)
-        private delegate IntPtr Addon_OnSetup_Delegate(IntPtr addon, uint a2, IntPtr dataPtr);
-
-        // __int64 __fastcall Client::UI::AddonXXX_Finalize(__int64 a1)
-        private delegate void Addon_OnFinalize_Delegate(IntPtr addon);
-
-        #endregion
-
         internal Configuration conf => Configuration.GetOrLoad();
 
         private IntPtr AddonRetainerSellList = IntPtr.Zero;
 
         public MarketGuiEventHandler()
         {
-            AddonItemSearchResult_ReceiveEvent_HW =
-                Commons.Hook<Addon_ReceiveEvent_Delegate>(
-                    AddonItemSearchResult_ReceiveEvent_Signature,
-                    AddonItemSearchResult_ReceiveEvent_Delegate_Detour);
+            AddonLifecycle.RegisterListener(AddonEvent.PostReceiveEvent, "ItemSearchResult", OnItemSearchResultReceiveEvent);
 
-            AddonRetainerSell_OnSetup_HW = Commons.Hook<Addon_OnSetup_Delegate>(
-                AddonRetainerSell_OnSetup_Signature,
-                AddonRetainerSell_OnSetup_Delegate_Detour);
+            AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "RetainerSell", OnRetainerSellSetup);
+            AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "ItemSearchResult", OnItemSearchResultSetup);
+            AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "RetainerSellList", OnRetainerSellListSetup);
+            AddonLifecycle.RegisterListener(AddonEvent.PreFinalize, "RetainerSellList", OnRetainerSellListFinalize);
 
-            AddonItemSearchResult_OnSetup_HW = Commons.Hook<Addon_OnSetup_Delegate>(
-                AddonItemSearchResult_OnSetup_Signature,
-                AddonItemSearchResult_OnSetup_Delegate_Detour);
-
-            AddonRetainerSellList_OnSetup_HW = Commons.Hook<Addon_OnSetup_Delegate>(
-                AddonRetainerSellList_OnSetup_Signature,
-                AddonRetainerSellList_OnSetup_Delegate_Detour);
-
-            AddonRetainerSellList_OnFinalize_HW = Commons.Hook<Addon_OnFinalize_Delegate>(
-                AddonRetainerSellList_OnFinalize_Signature,
-                AddonRetainerSellList_OnFinalize_Delegate_Detour);
         }
 
-        internal unsafe bool AddonRetainerSellList_Position(out Vector2 position)
+        private void OnRetainerSellListFinalize(AddonEvent type, AddonArgs args)
         {
-            position = Vector2.One;
-            if (AddonRetainerSellList == IntPtr.Zero)
-                return false;
-
-            position = new Vector2(
-                ((AtkUnitBase*)AddonRetainerSellList)->X + conf.AdjustMaxStackSizeInSellListOffset.X,
-                ((AtkUnitBase*)AddonRetainerSellList)->Y + conf.AdjustMaxStackSizeInSellListOffset.Y
-            );
-            return true;
-        }
-
-        private void AddonRetainerSellList_OnFinalize_Delegate_Detour(IntPtr addon)
-        {
+            var addon = args.Addon;
             if (addon == AddonRetainerSellList)
                 DebugMessage($"AddonRetainerSellList.OnFinalize (known: {addon:X})");
             else
                 DebugMessage(
                     $"AddonRetainerSellList.OnFinalize (unk. have {AddonRetainerSellList:X} got {addon:X})");
             AddonRetainerSellList = IntPtr.Zero;
-            AddonRetainerSellList_OnFinalize_HW.Original(addon);
         }
 
-        private IntPtr AddonRetainerSellList_OnSetup_Delegate_Detour(IntPtr addon, uint a2, IntPtr dataPtr)
+        private void OnRetainerSellListSetup(AddonEvent type, AddonArgs args)
         {
+            var addon = args.Addon;
             DebugMessage($"AddonRetainerSellList.OnSetup (got: {addon:X})");
-            var result = AddonRetainerSellList_OnSetup_HW.Original(addon, a2, dataPtr);
             AddonRetainerSellList = addon;
-            return result;
         }
 
-        public void Dispose()
+        private void OnItemSearchResultSetup(AddonEvent type, AddonArgs args)
         {
-            AddonItemSearchResult_ReceiveEvent_HW.Dispose();
-            AddonRetainerSell_OnSetup_HW.Dispose();
-            AddonItemSearchResult_OnSetup_HW.Dispose();
+            DebugMessage("AddonItemSearchResult.OnSetup");
+            var addon = args.Addon;
+
+            if (!IPCManager.IsLocked)
+            {
+                bool shouldOpenHistory = conf.AutoOpenHistory && !conf.HoldAltHistoryHandling
+                                     || conf.AutoOpenHistory && conf.HoldAltHistoryHandling && !Keys[VirtualKey.MENU]
+                                     || !conf.AutoOpenHistory && conf.HoldAltHistoryHandling && Keys[VirtualKey.MENU];
+
+                if (shouldOpenHistory)
+                    try
+                    {
+                        //open history on opening the list
+                        var history = ((AddonItemSearchResult*)addon)->History->AtkComponentBase.OwnerNode;
+                        //Client::UI::AddonItemSearchResult.ReceiveEvent this=0x1CC2BF42BD0 evt=EventType.CHANGE               a3=23  a4=0x1CCD86C1460 a5=0x90EF96E598
+                        Commons.SendClick(addon, EventType.CHANGE, 23, history);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "Houston, we have a problem");
+                    }
+            }
         }
 
-        private unsafe IntPtr AddonRetainerSell_OnSetup_Delegate_Detour(IntPtr addon, uint a2, IntPtr dataPtr)
+        private void OnRetainerSellSetup(AddonEvent type, AddonArgs args)
         {
             DebugMessage("AddonRetainerSell.OnSetup");
-            var result = AddonRetainerSell_OnSetup_HW.Original(addon, a2, dataPtr);
+            var addon = args.Addon;
 
             if (!IPCManager.IsLocked)
             {
@@ -148,43 +109,13 @@ namespace Marketbuddy
                     }
                 }
             }
-
-
-            return result;
         }
 
-        private unsafe IntPtr AddonItemSearchResult_OnSetup_Delegate_Detour(IntPtr addon, uint a2, IntPtr dataPtr)
+        private void OnItemSearchResultReceiveEvent(AddonEvent type, AddonArgs args)
         {
-            DebugMessage("AddonItemSearchResult.OnSetup");
-            var result = AddonItemSearchResult_OnSetup_HW.Original(addon, a2, dataPtr);
-
-            if (!IPCManager.IsLocked)
-            {
-                bool shouldOpenHistory = conf.AutoOpenHistory && !conf.HoldAltHistoryHandling
-                                     || conf.AutoOpenHistory && conf.HoldAltHistoryHandling && !Keys[VirtualKey.MENU]
-                                     || !conf.AutoOpenHistory && conf.HoldAltHistoryHandling && Keys[VirtualKey.MENU];
-
-                if (shouldOpenHistory)
-                    try
-                    {
-                        //open history on opening the list
-                        var history = ((AddonItemSearchResult*)addon)->History->AtkComponentBase.OwnerNode;
-                        //Client::UI::AddonItemSearchResult.ReceiveEvent this=0x1CC2BF42BD0 evt=EventType.CHANGE               a3=23  a4=0x1CCD86C1460 a5=0x90EF96E598
-                        Commons.SendClick(addon, EventType.CHANGE, 23, history);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, "Houston, we have a problem");
-                    }
-            }
-            return result;
-        }
-
-        private IntPtr AddonItemSearchResult_ReceiveEvent_Delegate_Detour(IntPtr self, ushort eventType,
-            uint eventParam, IntPtr eventStruct, IntPtr /* AtkResNode* */ nodeParam)
-        {
-            var result =
-                AddonItemSearchResult_ReceiveEvent_HW.Original(self, eventType, eventParam, eventStruct, nodeParam);
+            var eventArgs = (AddonReceiveEventArgs)args;
+            var eventType = eventArgs.AtkEventType;
+            var nodeParam = eventArgs.Data;
             if (!IPCManager.IsLocked)
             {
                 if (conf.AutoInputNewPrice || conf.SaveToClipboard)
@@ -210,7 +141,29 @@ namespace Marketbuddy
                             Log.Error(e, "Error getting price per item or setting the new price");
                         }
             }
-            return result;
+        }
+
+        internal unsafe bool AddonRetainerSellList_Position(out Vector2 position)
+        {
+            position = Vector2.One;
+            if (AddonRetainerSellList == IntPtr.Zero)
+                return false;
+
+            position = new Vector2(
+                ((AtkUnitBase*)AddonRetainerSellList)->X + conf.AdjustMaxStackSizeInSellListOffset.X,
+                ((AtkUnitBase*)AddonRetainerSellList)->Y + conf.AdjustMaxStackSizeInSellListOffset.Y
+            );
+            return true;
+        }
+
+        public void Dispose()
+        {
+            AddonLifecycle.UnregisterListener(AddonEvent.PostReceiveEvent, "ItemSearchResult", OnItemSearchResultReceiveEvent);
+
+            AddonLifecycle.UnregisterListener(AddonEvent.PostSetup, "RetainerSell", OnRetainerSellSetup);
+            AddonLifecycle.UnregisterListener(AddonEvent.PostSetup, "ItemSearchResult", OnItemSearchResultSetup);
+            AddonLifecycle.UnregisterListener(AddonEvent.PostSetup, "RetainerSellList", OnRetainerSellListSetup);
+            AddonLifecycle.UnregisterListener(AddonEvent.PreFinalize, "RetainerSellList", OnRetainerSellListFinalize);
         }
 
         private unsafe void SetPrice(int newPrice)
