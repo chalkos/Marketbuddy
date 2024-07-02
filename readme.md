@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.3.1
+  * update to api10, .net8 and sigs for Dawntrail (thanks Limiana)
 * 0.2.3.0
   * Add IPC to allow other plugins to request operation halting (by Limiana)
   * update sigs for 6.5 (thanks Limiana)
