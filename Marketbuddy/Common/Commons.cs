@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Game;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Hooking;
-using Dalamud.Logging;
-using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using static Marketbuddy.Common.Dalamud;
 
 namespace Marketbuddy.Common
 {
@@ -33,16 +25,16 @@ namespace Marketbuddy.Common
             }
             catch (Exception e)
             {
-                Dalamud.Log.Error(e, "Error unloading plugin");
+                Marketbuddy.Log.Error(e, "Error unloading plugin");
             }
         }
 
         public static HookWrapper<T> Hook<T>(string signature, T detour, bool enable = true, int addressOffset = 0)
             where T : Delegate
         {
-            var addr = Dalamud.SigScanner.ScanText(signature);
-            Dalamud.Log.Information($"hooking function at {addr:X}");
-            var h = Dalamud.Hook.HookFromAddress<T>(addr + addressOffset, detour);
+            var addr = Marketbuddy.SigScanner.ScanText(signature);
+            Marketbuddy.Log.Information($"hooking function at {addr:X}");
+            var h = Marketbuddy.Hook.HookFromAddress<T>(addr + addressOffset, detour);
             var wh = new HookWrapper<T>(h);
             if (enable) wh.Enable();
             HookList.Add(wh);
@@ -89,24 +81,22 @@ namespace Marketbuddy.Common
 
         public static unsafe AtkUnitBase* GetUnitBase(string name, int index = 1)
         {
-            return (AtkUnitBase*)Dalamud.GameGui.GetAddonByName(name, index).ToPointer();
+            return (AtkUnitBase*)Marketbuddy.GameGui.GetAddonByName(name, index).ToPointer();
         }
 
-        internal static unsafe void SendClick(IntPtr arg1, EventType arg2, uint arg3, void* target)
+        internal static unsafe void SendClick(AtkEventListener* arg1, AtkEventType arg2, int arg3, void* target)
         {
             SendClick(arg1, arg2, arg3, target, IntPtr.Zero);
         }
 
-        internal static unsafe void SendClick(IntPtr arg1, EventType arg2, uint arg3, void* target, IntPtr arg5)
+        internal static unsafe void SendClick(AtkEventListener* arg1, AtkEventType arg2, int arg3, void* target, IntPtr arg5)
         {
-            var receiveEvent = GetReceiveEventDelegate((AtkEventListener*)arg1);
-
             var arg4 = Marshal.AllocHGlobal(0x40);
             for (var i = 0; i < 0x40; i++)
                 Marshal.WriteByte(arg4, i, 0);
 
             Marshal.WriteIntPtr(arg4, 0x8, new IntPtr(target));
-            Marshal.WriteIntPtr(arg4, 0x10, arg1);
+            Marshal.WriteIntPtr(arg4, 0x10, new IntPtr(arg1));
 
             if (arg5 == IntPtr.Zero)
             {
@@ -115,18 +105,10 @@ namespace Marketbuddy.Common
                     Marshal.WriteByte(arg5, i, 0);
             }
 
-            receiveEvent(arg1, arg2, arg3, arg4, arg5);
+            arg1->ReceiveEvent(arg2, arg3, (AtkEvent*)arg4, (AtkEventData*)arg5);
 
             Marshal.FreeHGlobal(arg4);
             Marshal.FreeHGlobal(arg5);
         }
-
-        private static unsafe ReceiveEventDelegate GetReceiveEventDelegate(AtkEventListener* eventListener)
-        {
-            var receiveEventAddress = new IntPtr(eventListener->vfunc[2]);
-            return Marshal.GetDelegateForFunctionPointer<ReceiveEventDelegate>(receiveEventAddress);
-        }
-
-        private delegate void ReceiveEventDelegate(IntPtr addon, EventType evt, uint a3, IntPtr a4, IntPtr a5);
     }
 }

@@ -5,10 +5,10 @@
         "Punchline": "Less clicks, more gil!",
         "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.2.3.0",
+        "AssemblyVersion": "0.2.3.1",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
-        "DalamudApiLevel": 9,
+        "DalamudApiLevel": 10,
         "DownloadLinkInstall": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "IsHide": false,
         "IsTestingExclusive": false,
@@ -16,6 +16,6 @@
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
         "LastUpdated": "1632469669",
-        "Changelog": "- Add IPC to allow other plugins to request operation halting (by Limiana)\n- update sigs for 6.5 (thanks Limiana)"
+        "Changelog": "- updated for .net8, api10 and Dawntrail"
     }
 ]

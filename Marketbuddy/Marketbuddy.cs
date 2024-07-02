@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading.Tasks;
-using Dalamud.Game.ClientState.Keys;
+using Dalamud.Game;
 using Dalamud.Game.Command;
-using Dalamud.Game.Text;
-using Dalamud.Logging;
+using Dalamud.IoC;
 using Dalamud.Plugin;
-using Dalamud.Utility.Signatures;
-using FFXIVClientStructs;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
-using FFXIVClientStructs.Interop;
-using ImGuiNET;
+using Dalamud.Plugin.Services;
 using Marketbuddy.Common;
-using Marketbuddy.Structs;
-using static Marketbuddy.Common.Dalamud;
 
 namespace Marketbuddy
 {
     public unsafe class Marketbuddy : IDalamudPlugin
     {
+        [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
+        [PluginService] internal static ICommandManager         CommandManager        { get; private set; } = null!;
+        [PluginService] internal static ISigScanner             SigScanner      { get; private set; } = null!;
+        [PluginService] internal static IChatGui ChatGui            { get; private set; } = null!;
+        [PluginService] internal static IKeyState Keys        { get; private set; } = null!;
+        [PluginService] internal static IGameGui GameGui { get; private set; } = null!;
+        [PluginService] internal static IPluginLog Log { get; private set; } = null!;
+        [PluginService] internal static IGameInteropProvider Hook { get; private set; } = null!;
+        
         private const string commandName = "/mbuddy";
-
+        
         internal PluginUI PluginUi { get; private set; }
 
         internal MarketGuiEventHandler MarketGuiEventHandler { get; private set; }
@@ -30,19 +30,22 @@ namespace Marketbuddy
         public string AssemblyLocation { get; set; } = Assembly.GetExecutingAssembly().Location;
         public string Name => "Marketbuddy";
 
-        public Marketbuddy(DalamudPluginInterface pluginInterface)
+        public Marketbuddy()
         {
             try
             {
-                DalamudInitialize(pluginInterface);
-                Resolver.GetInstance.SetupSearchSpace(SigScanner.SearchBase);
-                Resolver.GetInstance.Resolve();
+                
+                
+                
+                // DalamudInitialize(pluginInterface);
+                // Resolver.GetInstance.SetupSearchSpace(SigScanner.SearchBase);
+                // Resolver.GetInstance.Resolve();
                 
                 MarketGuiEventHandler = new MarketGuiEventHandler();
 
                 PluginUi = new PluginUI(this);
-
-                Common.Dalamud.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
+                
+                CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
                 {
                     HelpMessage = "Show plugin configuration window."
                 });
@@ -64,7 +67,7 @@ namespace Marketbuddy
             IPCManager.Shutdown();
             PluginInterface.UiBuilder.Draw -= DrawUi;
             PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUi;
-            Common.Dalamud.CommandManager.RemoveHandler(commandName);
+            CommandManager.RemoveHandler(commandName);
             PluginUi.Dispose();
             MarketGuiEventHandler.Dispose();
             Commons.Dispose();

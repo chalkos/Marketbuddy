@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using Dalamud.Configuration;
-using static Marketbuddy.Common.Dalamud;
 
 namespace Marketbuddy
 {
@@ -35,7 +34,7 @@ namespace Marketbuddy
 
         public void Save()
         {
-            PluginInterface.SavePluginConfig(this);
+            Marketbuddy.PluginInterface.SavePluginConfig(this);
         }
 
         public static Configuration GetOrLoad()
@@ -43,7 +42,7 @@ namespace Marketbuddy
             if (_cachedConfig != null)
                 return _cachedConfig;
 
-            if (PluginInterface.GetPluginConfig() is not Configuration conf)
+            if (Marketbuddy.PluginInterface.GetPluginConfig() is not Configuration conf)
             {
                 conf = new Configuration();
                 conf.Save();
