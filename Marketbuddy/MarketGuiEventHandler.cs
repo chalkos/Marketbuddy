@@ -265,7 +265,7 @@ namespace Marketbuddy
         private void DebugMessage(string msg)
         {
 #if DEBUG
-            Dalamud.Log.Debug(msg);
+            Log.Debug(msg);
 #endif
         }
     }
