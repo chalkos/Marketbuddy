@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.3.2
+  * update to api11 and 7.1 (thanks ChrisMellor and Limiana)
 * 0.2.3.1
   * update to api10, .net8 and sigs for Dawntrail (thanks Limiana)
 * 0.2.3.0

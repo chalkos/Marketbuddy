@@ -5,17 +5,16 @@
         "Punchline": "Less clicks, more gil!",
         "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.2.3.1",
+        "AssemblyVersion": "0.2.3.2",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
-        "DalamudApiLevel": 10,
         "DownloadLinkInstall": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "IsHide": false,
         "IsTestingExclusive": false,
         "DownloadLinkTesting": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
-        "LastUpdated": "1632469699",
-        "Changelog": "- update to api10, .net8 and sigs for Dawntrail (thanks Limiana)"
+        "LastUpdated": "1632469999",
+        "Changelog": "- update to api11 and 7.1 (thanks ChrisMellor and Limiana)"
     }
 ]
