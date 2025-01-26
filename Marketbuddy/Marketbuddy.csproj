@@ -4,7 +4,7 @@
         <OutputType>Library</OutputType>
         <Authors>Chalkos</Authors>
         <Title>Marketbuddy</Title>
-        <Version>0.2.3.2</Version>
+        <Version>0.2.3.3</Version>
         <Deterministic>true</Deterministic>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
