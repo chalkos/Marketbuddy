@@ -5,7 +5,7 @@
         "Punchline": "Less clicks, more gil!",
         "Description": "Helper for your day-to-day market operations.",
         "InternalName": "Marketbuddy",
-        "AssemblyVersion": "0.2.3.2",
+        "AssemblyVersion": "0.2.3.3",
         "RepoUrl": "https://github.com/chalkos/Marketbuddy",
         "ApplicableVersion": "any",
         "DownloadLinkInstall": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
@@ -14,7 +14,7 @@
         "DownloadLinkTesting": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
-        "LastUpdated": "1632469999",
-        "Changelog": "- update to api11 and 7.1 (thanks ChrisMellor and Limiana)"
+        "LastUpdated": "1737889081",
+        "Changelog": "- version bump due to IPC changes in Dalamud (fixes unloading error)"
     }
 ]
