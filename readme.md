@@ -31,6 +31,8 @@ Holding SHIFT prevents some automation, but you're better off just disabling wha
 
 ## Changelog
 
+* 0.2.3.4
+  * update for 7.2 (thanks Limiana)
 * 0.2.3.3
   * version bump due to IPC changes in Dalamud (fixes unloading error)
 * 0.2.3.2
