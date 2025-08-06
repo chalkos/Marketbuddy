@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game;
 using Dalamud.Game.Gui;
+using Dalamud.Game.NativeWrapper;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Hooking;
 using Dalamud.Logging;
@@ -82,14 +83,14 @@ namespace Marketbuddy.Common
         }
         
         public static unsafe string Utf8StringToString(Utf8String str) {
-            if (str.StringPtr == null || str.BufUsed <= 1)
+            if (str.IsEmpty || str.BufUsed <= 1)
                 return string.Empty;
             return Encoding.UTF8.GetString(str.StringPtr, (int)str.BufUsed - 1);
         }
 
         public static unsafe AtkUnitBase* GetUnitBase(string name, int index = 1)
         {
-            return (AtkUnitBase*)Dalamud.GameGui.GetAddonByName(name, index).ToPointer();
+            return (AtkUnitBase*)Dalamud.GameGui.GetAddonByName(name, index).Address;
         }
 
         internal static unsafe void SendClick(IntPtr arg1, EventType arg2, uint arg3, void* target)

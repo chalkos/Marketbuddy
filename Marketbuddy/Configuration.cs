@@ -54,8 +54,8 @@ namespace Marketbuddy
                     conf.MaximumStackSize = 9999;
                 if (!conf.AutoInputNewPrice)
                     conf.AutoConfirmNewPrice = false;
-                if (!conf.AutoOpenComparePrices)
-                    conf.HoldShiftToStop = false;
+                //if (!conf.AutoOpenComparePrices)
+                //    conf.HoldShiftToStop = false;
                 if (conf.UndercutPrice < 0)
                     conf.UndercutPrice = 0;
             }
