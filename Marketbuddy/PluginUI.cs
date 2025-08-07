@@ -3,7 +3,7 @@ using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace Marketbuddy
 {
@@ -107,7 +107,7 @@ namespace Marketbuddy
             if(IPCManager.Locks.Count > 0)
             {
                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-                ImGuiHelpers.SafeTextWrapped($"Lock commands has been received from these plugins and Marketbuddy operation is fully halted:");
+                ImGui.TextWrapped($"Lock commands has been received from these plugins and Marketbuddy operation is fully halted:");
                 ImGui.TextUnformatted($"{string.Join("\n", IPCManager.Locks)}");
                 if(ImGui.Button("Release locks"))
                 {

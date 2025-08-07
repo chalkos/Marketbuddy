@@ -9,7 +9,8 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.Attributes;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
+using Dalamud.Game.NativeWrapper;
 using Marketbuddy.Common;
 using Marketbuddy.Structs;
 using static Marketbuddy.Common.Dalamud;
@@ -54,7 +55,7 @@ namespace Marketbuddy
         private void OnItemSearchResultSetup(AddonEvent type, AddonArgs args)
         {
             DebugMessage("AddonItemSearchResult.OnSetup");
-            var addon = args.Addon;
+            IntPtr addon = args.Addon;
 
             if (!IPCManager.IsLocked)
             {
@@ -80,7 +81,7 @@ namespace Marketbuddy
         private void OnRetainerSellSetup(AddonEvent type, AddonArgs args)
         {
             DebugMessage("AddonRetainerSell.OnSetup");
-            var addon = args.Addon;
+            IntPtr addon = args.Addon;
 
             if (!IPCManager.IsLocked)
             {

@@ -11,7 +11,7 @@ using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using FFXIVClientStructs.Interop;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 using Marketbuddy.Common;
 using Marketbuddy.Structs;
 using static Marketbuddy.Common.Dalamud;
