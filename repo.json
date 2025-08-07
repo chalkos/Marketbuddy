@@ -14,7 +14,7 @@
         "DownloadLinkTesting": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadLinkUpdate": "https://github.com/chalkos/Marketbuddy/raw/main/latest.zip",
         "DownloadCount": 0,
-        "LastUpdated": "1737889082",
-        "Changelog": "- update for 7.2 (thanks Limiana)"
+        "LastUpdated": "1754532873",
+        "Changelog": "* update for api13 (thanks PhoenixtheII)\n* persist option to open current prices list when holding SHIFT (thanks PhoenixtheII)"
     }
 ]
