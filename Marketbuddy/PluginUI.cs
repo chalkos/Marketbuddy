@@ -117,12 +117,7 @@ namespace Marketbuddy
             }
 
             if (ImGui.Checkbox("Open current prices list when adjusting a price", ref conf.AutoOpenComparePrices))
-            {
-                if (!conf.AutoOpenComparePrices)
-                    conf.HoldShiftToStop = false;
                 conf.Save();
-            }
-
 
             DrawNestIndicator(1);
             if (ImGui.Checkbox(
